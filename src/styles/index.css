@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.bg-img {
+  background-image: url("../assets/images/img1.jpg");
+}
+
+.chatMessage-left,
+.chatMessage-right {
+  background: #c2bfbf;
+  max-width: 65%;
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.chatMessage-right {
+  border-radius: 8px 0px 8px 8px;
+}
+
+.chatMessage-left {
+  border-radius: 0px 8px 8px;
+
+}
+
+.chatMessage-left::before {
+  content: "";
+  position: absolute;
+  border-left: 10px solid transparent;
+  border-right: 16px solid #c2bfbf;
+  border-top: 0px solid transparent;
+  border-bottom: 11px solid transparent;
+  top: 0;
+  left: -25px;
+}
+
+.chatMessage-right::after {
+  content: "";
+  position: absolute;
+  border-left: 16px solid #c2bfbf;
+  border-right: 10px solid transparent;
+  border-top: 0px solid transparent;
+  border-bottom: 11px solid transparent;
+  top: 0;
+  right: -25px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+}
