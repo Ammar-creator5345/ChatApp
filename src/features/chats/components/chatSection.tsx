@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import CameraModal from "./cameraModal";
 import MenuPopover from "./menuPopover";
 import { useReactMediaRecorder } from "react-media-recorder";
@@ -8,6 +8,7 @@ import { messageType, SelectedChatTypes } from "../types/chatTypes";
 import RecordingSection from "./recordingSection";
 import InputSection from "./inputSection";
 import Messages from "./messages";
+import FileDrawer from "./fileDrawer";
 
 type PropTypes = {
   selectedChat: SelectedChatTypes | null;
@@ -39,6 +40,14 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     setAnchorEl(null);
   };
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [image, setImage] = useState<string>("");
+  const [file, setFile] = useState<Record<string, any>>({});
+  const handleCloseDrawer = (): void => {
+    setOpenDrawer(false);
+    setImage("");
+    setFile({});
+  };
 
   const resumeTimer = () => {
     if (!recordingRef.current) {
@@ -63,7 +72,13 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     setText("");
   };
 
+  const handleSendFile = async (fileType: string, file: any) => {
+    const res = await sendFile(fileType, file);
+    setOpenDrawer(false);
+  };
+
   useEffect(() => {
+    console.log(process.env.REACT_APP_SUPABASE_URL);
     if (isPaused) {
       pauseRecording();
       stopTimer();
@@ -80,35 +95,46 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     }
   }, [isRecordingOn]);
 
-  const uploadData = async () => {
-    try {
-      const formData = new FormData();
-      formData.append(
-        "file",
-        "https://images.pexels.com/photos/1704488/pexels-photo-1704488.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+  const handlePhotosPicker = (e: ChangeEvent<HTMLInputElement>): void => {
+    console.log("event", e);
+    if (e.target.files) {
+      const files = e.target.files[0];
+      setFile(files);
+      const createdUrl = URL.createObjectURL(files);
+      setImage(createdUrl);
+      console.log(files);
+      setOpenDrawer(true);
+      e.target.value = "";
+    }
+  };
+  const handleDocumentPicker = (e: ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.files) {
+      const files = e.target.files[0];
+      console.log(files);
+      setImage(
+        "https://img.freepik.com/free-vector/files-blue-colour_78370-6661.jpg?semt=ais_incoming&w=740&q=80"
       );
-      formData.append("upload_preset", "chat_app");
-      const res = await uploadFile(formData);
-      console.log("uploaded File Response", res?.data);
-      setUploadedFileUrl(res?.data?.url);
-      await sendFile("image", res?.data?.url);
-    } catch (err) {
-      console.log(err);
+      setFile(files);
+      setOpenDrawer(true);
+      e.target.value = "";
     }
   };
   return (
     <div>
-      <button
-        onClick={() => uploadData()}
-        className="border border-black p-2 rounded-md"
-      >
-        send Img
-      </button>
       <MenuPopover
         open={open}
         anchorEl={anchorEl}
         handleClose={handleClose}
         setOpenCameraModal={setOpenCameraModal}
+        handleDocumentPicker={handleDocumentPicker}
+        handlePhotosPicker={handlePhotosPicker}
+      />
+      <FileDrawer
+        file={file}
+        image={image}
+        openDrawer={openDrawer}
+        handleCloseDrawer={handleCloseDrawer}
+        handleSendFile={handleSendFile}
       />
       <CameraModal open={openCameraModal} setOpen={setOpenCameraModal} />
 
@@ -132,6 +158,8 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
             recordingTime={recordingTime}
             isPaused={isPaused}
             setIsPaused={setIsPaused}
+            handleSendFile={handleSendFile}
+            mediaBlobUrl={mediaBlobUrl}
           />
         )}
       </div>

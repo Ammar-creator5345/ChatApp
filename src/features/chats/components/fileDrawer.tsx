@@ -7,6 +7,7 @@ type PropsTypes = {
   image: string;
   openDrawer: boolean;
   handleCloseDrawer: () => void;
+  handleSendFile: (fileType: string, file: any) => void;
 };
 
 const FileDrawer = ({
@@ -14,7 +15,16 @@ const FileDrawer = ({
   image,
   openDrawer,
   handleCloseDrawer,
+  handleSendFile,
 }: PropsTypes) => {
+  // const handleSendDocument = async () => {
+  //   if (file) {
+  //     const res = await uploadFile(file);
+  //     console.log("this is res", res);
+  //     handlese
+  //     console.log(file);
+  //   }
+  // };
   return (
     <Drawer
       slotProps={{
@@ -59,7 +69,12 @@ const FileDrawer = ({
             placeholder="Add a Caption..."
             className="w-full rounded-2xl outline-none border p-2 px-3 placeholder:text-[#4e4d4d]"
           />
-          <button className="p-2 rounded-full bg-green-500 flex items-center justify-center transition-all hover:bg-green-600">
+          <button
+            onClick={() => {
+              handleSendFile(file.type, file);
+            }}
+            className="p-2 rounded-full bg-green-500 flex items-center justify-center transition-all hover:bg-green-600"
+          >
             <SendIcon />
           </button>
         </div>

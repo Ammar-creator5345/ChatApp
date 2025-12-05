@@ -2,7 +2,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MicIcon from "@mui/icons-material/Mic";
 import PauseIcon from "@mui/icons-material/Pause";
 import SendIcon from "@mui/icons-material/Send";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 type PropsTypes = {
   stopRecording: () => void;
@@ -11,6 +11,8 @@ type PropsTypes = {
   recordingTime: number;
   isPaused: boolean;
   setIsPaused: Dispatch<SetStateAction<boolean>>;
+  handleSendFile: (fileType: string, file: any) => void;
+  mediaBlobUrl: string | undefined;
 };
 
 const RecordingSection = ({
@@ -20,7 +22,24 @@ const RecordingSection = ({
   recordingTime,
   isPaused,
   setIsPaused,
+  handleSendFile,
+  mediaBlobUrl,
 }: PropsTypes) => {
+  useEffect(() => {
+    if (mediaBlobUrl) {
+      console.log("Audio blob ready:", mediaBlobUrl);
+    }
+  }, [mediaBlobUrl]);
+  const handleSendAudio = async () => {
+    stopRecording();
+    resetTimer();
+    if (!mediaBlobUrl) return;
+    const res = await fetch(mediaBlobUrl);
+    const blob = await res.blob();
+    handleSendFile("audio", blob);
+    setIsRecordingOn(false);
+  };
+
   return (
     <div className="p-3 bg-red-300 my-6">
       <div className="flex items-center justify-end gap-4">
@@ -45,7 +64,10 @@ const RecordingSection = ({
         <button onClick={() => setIsPaused((prev) => !prev)}>
           {isPaused ? <MicIcon /> : <PauseIcon />}
         </button>
-        <button className="bg-green-600 p-2 py-[6px] rounded-md flex items-center justify-center transition-all hover:bg-green-700">
+        <button
+          onClick={handleSendAudio}
+          className="bg-green-600 p-2 py-[6px] rounded-md flex items-center justify-center transition-all hover:bg-green-700"
+        >
           <SendIcon />
         </button>
       </div>

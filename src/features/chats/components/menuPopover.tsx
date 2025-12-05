@@ -7,6 +7,8 @@ type PropTypes = {
   anchorEl: HTMLButtonElement | null;
   handleClose: () => void;
   setOpenCameraModal: Dispatch<SetStateAction<boolean>>;
+  handleDocumentPicker: (e: ChangeEvent<HTMLInputElement>) => void;
+  handlePhotosPicker: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 const MenuPopover = ({
@@ -14,49 +16,11 @@ const MenuPopover = ({
   anchorEl,
   handleClose,
   setOpenCameraModal,
+  handleDocumentPicker,
+  handlePhotosPicker,
 }: PropTypes) => {
-  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
-  const [file, setFile] = useState<Record<string, any>>({});
-
-  const handlePhotosPicker = (e: ChangeEvent<HTMLInputElement>): void => {
-    console.log("event", e);
-    if (e.target.files) {
-      const files = e.target.files[0];
-      setFile(files);
-      const createdUrl = URL.createObjectURL(files);
-      setImage(createdUrl);
-      console.log(files);
-      setOpenDrawer(true);
-      e.target.value = "";
-    }
-  };
-  const handleDocumentPicker = (e: ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.files) {
-      const files = e.target.files[0];
-      console.log(files);
-      setImage(
-        "https://img.freepik.com/free-vector/files-blue-colour_78370-6661.jpg?semt=ais_incoming&w=740&q=80"
-      );
-      setFile(files);
-      setOpenDrawer(true);
-      e.target.value = "";
-    }
-  };
-  const handleCloseDrawer = (): void => {
-    setOpenDrawer(false);
-    setImage("");
-    setFile({});
-  };
-
   return (
     <>
-      <FileDrawer
-        file={file}
-        image={image}
-        openDrawer={openDrawer}
-        handleCloseDrawer={handleCloseDrawer}
-      />
       <input
         type="file"
         accept=".pdf,.docx,application/msword*"

@@ -4,8 +4,9 @@ export type messageType = {
   text: string;
   type: string;
   status: string;
-  fileUrl:string;
+  fileUrl: string;
   timestamp: { seconds: number; nanoseconds: number };
+  fileName: string;
 };
 
 export type ChatListTypes = {

@@ -101,7 +101,7 @@ const InputSection = ({
           <MicNoneOutlinedIcon />
         </button>
       )}
-      <div ref={emojiDivRef} className="absolute bottom-full mb-2 bg-red-600">
+      <div ref={emojiDivRef} className="absolute bottom-full mb-1">
         <EmojiPicker
           onEmojiClick={(obj) => setText((prev) => prev + obj.emoji)}
           open={openEmojiPicker}

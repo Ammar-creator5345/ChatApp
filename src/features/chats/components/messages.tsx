@@ -1,9 +1,12 @@
 import { DateHeaderFormatter } from "../utils/DateHeaderFormatter";
 import { messageType } from "../types/chatTypes";
 import { useAuth } from "../../../auth/authContext";
-import { TimeFormatter } from "../../../utils/timeFormatter";
-import { useMemo } from "react";
-import { renderStatusIcon } from "../utils/renderStatusIcon";
+import { useMemo, useState } from "react";
+import AudioMessage from "./audioMessage";
+import PdfMessage from "./pdfMessage";
+import VideoMessage from "./videoMessage";
+import ImageMessage from "./imageMessage";
+import TextMessage from "./textMessage";
 
 type PropsTypes = {
   messages: null | messageType[];
@@ -31,57 +34,22 @@ const Messages = ({ messages }: PropsTypes) => {
           {groupedMessages[date]?.map((message: messageType) => (
             <div
               key={message.id}
-              className={` mt-[6px] bg-red-600 flex items-center gap-3 ${
+              className={` mt-[6px] bg-red-600 flex items-start gap-1 ${
                 user?.uid === message.senderId ? "justify-end" : "justify-start"
               }`}
             >
               {user?.uid !== message.senderId && (
                 <div className="w-12 h-12 bg-black rounded-full"></div>
               )}
-              {message.type === "text" && (
-                <div
-                  className={`${
-                    user?.uid === message.senderId
-                      ? "chatMessage-right"
-                      : "chatMessage-left"
-                  }`}
-                >
-                  <p className="text-[17px]">{message.text}</p>
-                  <p className="text-[10px] pt-3 whitespace-nowrap">
-                    {TimeFormatter(message.timestamp.seconds)}
-                  </p>
-                  <div>
-                    {user?.uid === message.senderId &&
-                      renderStatusIcon(message.status)}
-                  </div>
-                </div>
+              {message.type === "text" && <TextMessage message={message} />}
+              {message.type === "image/png" && (
+                <ImageMessage message={message} />
               )}
-              {message.type === "image" && (
-                <div
-                  className={`${
-                    user?.uid === message.senderId
-                      ? "chatMessage-right"
-                      : "chatMessage-left"
-                  }`}
-                >
-                  <div className="w-[200px] h-[200px] bg-red-500">
-                    <img
-                      src={message.fileUrl}
-                      alt="uploaded picture"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 pt-2 absolute text-white right-4 bottom-0">
-                    <p className="text-[10px] whitespace-nowrap">
-                      {TimeFormatter(message.timestamp.seconds)}
-                    </p>
-                    <p className="pb-1">
-                      {user?.uid === message.senderId &&
-                        renderStatusIcon(message.status)}
-                    </p>
-                  </div>
-                </div>
+              {message.type === "application/pdf" && (
+                <PdfMessage message={message} />
               )}
+              {message.type === "video" && <VideoMessage message={message} />}
+              {message.type === "audio" && <AudioMessage message={message} />}
             </div>
           ))}
         </div>

@@ -10,6 +10,8 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { messageType } from "../types/chatTypes";
 import { db } from "../../../auth/InitializeFireBase";
 import { useAuth } from "../../../auth/authContext";
+import { uploadFile } from "../../../services/cloudinary/uploadData";
+import { uploadFileToSupabase } from "../../../services/supabase/uploadFile";
 
 const useMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<null | messageType[]>(null);
@@ -60,10 +62,20 @@ const useMessages = (chatId: string | undefined) => {
       console.log(err);
     }
   };
-
-  const sendFile = async (fileType: string, fileUrl: string | null) => {
+  const sendFile = async (fileType: string, file: any) => {
     try {
-      if (!fileUrl) return;
+      if (!file) return;
+      let fileUrl;
+      if (fileType === "application/pdf") {
+        const res = await uploadFileToSupabase(file);
+        fileUrl = res?.publicUrl;
+      } else {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "chat_app");
+        const res = await uploadFile(formData, fileType);
+        fileUrl = res?.data?.secure_url || res?.data?.url;
+      }
       const collectionData = collection(
         db,
         "chats",
@@ -76,6 +88,7 @@ const useMessages = (chatId: string | undefined) => {
         fileUrl: fileUrl,
         type: fileType,
         status: "sent",
+        fileName: file.name,
       });
       console.log("added Message");
     } catch (err) {
