@@ -67,3 +67,19 @@ code {
 .no-scrollbar::-webkit-scrollbar {
   width: 0;
 }
+
+.messages_scrollbar {
+  margin-right: 2px;
+}
+
+.messages_scrollbar::-webkit-scrollbar {
+  width: 2px;
+  background-color: transparent;
+}
+
+.messages_scrollbar::-webkit-scrollbar-thumb {
+  width: 2px;
+  background-color: rgb(0, 0, 0);
+  border-radius: 10px;
+  margin: 10px;
+}

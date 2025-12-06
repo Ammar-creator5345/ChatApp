@@ -79,7 +79,11 @@ const AudioMessage = ({ message }: PropsTypes) => {
           </span>
           <div className="flex items-center gap-2">
             <span>{TimeFormatter(message.timestamp.seconds)}</span>
-            {isSender && <span className="mb-[3px]">{renderStatusIcon(message.status)}</span>}
+            {isSender && (
+              <span className="mb-[3px]">
+                {renderStatusIcon(message.status)}
+              </span>
+            )}
           </div>
         </div>
       </div>

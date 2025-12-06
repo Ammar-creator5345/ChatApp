@@ -48,7 +48,7 @@ const InputSection = ({
   }, []);
 
   return (
-    <div className="bg-red-300 relative flex items-center gap-1 my-6">
+    <div className="bg-red-300 relative flex items-center gap-1">
       <div className="flex items-center gap-1">
         <button
           onClick={(e) => {

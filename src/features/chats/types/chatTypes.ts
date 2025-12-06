@@ -23,4 +23,13 @@ export type SelectedChatTypes = {
   id: string;
   name: string;
   participants: string[];
+  otherUid?: string;
+};
+
+export type selectedUserDataTypes = {
+  displayName: string;
+  email: string;
+  isOnline: boolean;
+  photoUrl: string;
+  uid: string;
 };

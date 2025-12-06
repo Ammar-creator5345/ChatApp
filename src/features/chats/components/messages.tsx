@@ -7,6 +7,7 @@ import PdfMessage from "./pdfMessage";
 import VideoMessage from "./videoMessage";
 import ImageMessage from "./imageMessage";
 import TextMessage from "./textMessage";
+import { useSelectedUserContext } from "../context/selectedUserContext";
 
 type PropsTypes = {
   messages: null | messageType[];
@@ -14,6 +15,7 @@ type PropsTypes = {
 
 const Messages = ({ messages }: PropsTypes) => {
   const { user } = useAuth();
+  const userData = useSelectedUserContext()?.selectedUserData;
   const groupedMessages = useMemo(() => {
     const groups: Record<string, messageType[]> = {};
     messages?.forEach((message) => {
@@ -28,18 +30,24 @@ const Messages = ({ messages }: PropsTypes) => {
     <div>
       {Object.keys(groupedMessages).map((date, index) => (
         <div key={date}>
-          <h1 className="text-center m-auto my-1 bg-green-400 p-1 font-semibold rounded-md  w-fit">
+          <h1 className="text-center m-auto my-1 text-sm  bg-[#252424] text-white p-1 font-[500] rounded-md  w-fit">
             {DateHeaderFormatter(date)}
           </h1>
           {groupedMessages[date]?.map((message: messageType) => (
             <div
               key={message.id}
-              className={` mt-[6px] bg-red-600 flex items-start gap-1 ${
+              className={` mt-[6px] flex items-start gap-1 ${
                 user?.uid === message.senderId ? "justify-end" : "justify-start"
               }`}
             >
               {user?.uid !== message.senderId && (
-                <div className="w-12 h-12 bg-black rounded-full"></div>
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <img
+                    src={userData?.photoUrl}
+                    alt=""
+                    className="w-full h-full"
+                  />
+                </div>
               )}
               {message.type === "text" && <TextMessage message={message} />}
               {message.type === "image/png" && (

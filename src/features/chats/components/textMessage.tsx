@@ -12,7 +12,7 @@ const TextMessage = ({ message }: PropsTypes) => {
   const isSender = user?.uid === message.senderId;
   return (
     <div className={`${isSender ? "chatMessage-right" : "chatMessage-left"}`}>
-      <p className="text-[17px]">{message.text}</p>
+      <p className="text-[15px]">{message.text}</p>
       <div className="flex items-end gap-2 h-4">
         <p className="text-[10px] whitespace-nowrap">
           {TimeFormatter(message.timestamp.seconds)}

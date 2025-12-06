@@ -11,7 +11,7 @@ function App() {
   const navigate = useNavigate();
   useEffect(() => {
     if (user) {
-      navigate("/profile");
+      navigate("/");
     }
   }, [user]);
 

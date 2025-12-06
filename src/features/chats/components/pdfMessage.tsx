@@ -29,7 +29,7 @@ const PdfMessage = ({ message }: PropsTypes) => {
       }`}
     >
       <div className="flex flex-col relative items-center justify-center pb-4">
-        <div className="w-[250px] bg-red-500 p-2 rounded-md">
+        <div className="w-[250px] bg-[#6d6262] text-white p-2 rounded-md">
           <div className="flex items-center gap-1">
             <div className="flex-shrink-0 w-10">
               <img

@@ -1,10 +1,10 @@
 import { Route } from "react-router-dom";
 import MainLayout from "../layouts/mainLayout";
-import Profile from "../pages/chats";
+import Chats from "../pages/chats";
 
 const PrivateRoutes = (
   <Route element={<MainLayout />}>
-    <Route path="/profile" element={<Profile />} />
+    <Route path="/" element={<Chats />} />
   </Route>
 );
 export default PrivateRoutes;

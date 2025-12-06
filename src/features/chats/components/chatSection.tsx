@@ -9,6 +9,7 @@ import RecordingSection from "./recordingSection";
 import InputSection from "./inputSection";
 import Messages from "./messages";
 import FileDrawer from "./fileDrawer";
+import ChatHeader from "./chatHeader";
 
 type PropTypes = {
   selectedChat: SelectedChatTypes | null;
@@ -137,31 +138,36 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
         handleSendFile={handleSendFile}
       />
       <CameraModal open={openCameraModal} setOpen={setOpenCameraModal} />
-
-      <div className="mx-10">
-        <Messages messages={messages} />
-
-        {!isRecordingOn ? (
-          <InputSection
-            text={text}
-            setText={setText}
-            handleClick={handleClick}
-            handleSendMessage={handleSendMessage}
-            setIsRecordingOn={setIsRecordingOn}
-            startRecording={startRecording}
-          />
-        ) : (
-          <RecordingSection
-            stopRecording={stopRecording}
-            setIsRecordingOn={setIsRecordingOn}
-            resetTimer={resetTimer}
-            recordingTime={recordingTime}
-            isPaused={isPaused}
-            setIsPaused={setIsPaused}
-            handleSendFile={handleSendFile}
-            mediaBlobUrl={mediaBlobUrl}
-          />
-        )}
+      <div className="flex flex-col h-screen">
+        <div>
+          <ChatHeader />
+        </div>
+        <div className="pr-10 pl-4 flex-1 overflow-y-auto my-2 messages_scrollbar">
+          <Messages messages={messages} />
+        </div>
+        <div>
+          {!isRecordingOn ? (
+            <InputSection
+              text={text}
+              setText={setText}
+              handleClick={handleClick}
+              handleSendMessage={handleSendMessage}
+              setIsRecordingOn={setIsRecordingOn}
+              startRecording={startRecording}
+            />
+          ) : (
+            <RecordingSection
+              stopRecording={stopRecording}
+              setIsRecordingOn={setIsRecordingOn}
+              resetTimer={resetTimer}
+              recordingTime={recordingTime}
+              isPaused={isPaused}
+              setIsPaused={setIsPaused}
+              handleSendFile={handleSendFile}
+              mediaBlobUrl={mediaBlobUrl}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
