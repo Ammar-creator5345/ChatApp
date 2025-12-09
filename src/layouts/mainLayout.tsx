@@ -1,11 +1,16 @@
-import { Outlet, Route, Routes } from "react-router-dom";
-import Profile from "../pages/chats.js";
+import { Outlet } from "react-router-dom";
+import SideBar from "../shared/components/layout/sideBar";
 
 const MainLayout = () => {
   return (
-    <>
-      <Outlet />
-    </>
+    <div className="flex">
+      <div>
+        <SideBar />
+      </div>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
   );
 };
 

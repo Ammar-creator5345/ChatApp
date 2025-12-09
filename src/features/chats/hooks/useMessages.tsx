@@ -10,9 +10,8 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { messageType } from "../types/chatTypes";
 import { db } from "../../../auth/InitializeFireBase";
 import { useAuth } from "../../../auth/authContext";
-import { uploadFile } from "../../../services/cloudinary/uploadData";
-import { uploadFileToSupabase } from "../../../services/supabase/uploadFile";
-
+import { uploadFile } from "../../../shared/services/cloudinary/uploadData";
+import { uploadFileToSupabase } from "../../../shared/services/supabase/uploadFile";
 const useMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<null | messageType[]>(null);
   const { user } = useAuth();

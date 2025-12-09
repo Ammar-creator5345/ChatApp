@@ -21,6 +21,7 @@ import {
   selectedUserDataTypes,
 } from "../features/chats/types/chatTypes";
 import { SelectedUserContext } from "../features/chats/context/selectedUserContext";
+import DetailsDrawer from "../features/chats/components/detailsDrawer";
 
 const Chats = () => {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ const Chats = () => {
   );
   const [selectedUserData, setSelectedUserData] =
     useState<selectedUserDataTypes | null>(null);
+  const [open, setOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const handleSignOut = () => {
     updateDoc(doc(db, "users", user?.uid as string), { isOnline: false });
@@ -100,41 +102,39 @@ const Chats = () => {
   }, [selectedChat]);
 
   return (
-    <SelectedUserContext.Provider value={{ selectedUserData }}>
-      <div>
-        {loading && (
-          <div className="bg-white/10 z-[200] fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
-            <CircularProgress color="inherit" />
-          </div>
-        )}
-        <div>
-          {/* <button
-          onClick={handleSignOut}
-          className="border mt-3 mx-4 border-black p-2 rounded-md transition-all hover:bg-black hover:text-white"
-        >
-          log out
-        </button> */}
-          <div className="bg-red-100 flex">
-            <div className="">
-              <ChatList
-                chatList={chatList}
-                setChatList={setChatList}
-                setSelectedChat={setSelectedChat}
-              />
+    <>
+      <DetailsDrawer open={open} setOpen={setOpen} />
+      <SelectedUserContext.Provider value={{ selectedUserData }}>
+        <div className={`${open ? "mr-[300px]" : ""}`}>
+          {loading && (
+            <div className="bg-white/10 z-[200] fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
+              <CircularProgress color="inherit" />
             </div>
-            <div className="border-l border-l-black flex-1">
-              {selectedChat ? (
-                <ChatSection selectedChat={selectedChat} />
-              ) : (
-                <div className="flex items-center justify-center h-full text-white">
-                  Select a chat to start messaging
-                </div>
-              )}
+          )}
+          <div>
+            <div className="bg-red-100 flex">
+              <button onClick={() => setOpen(true)}>open</button>
+              <div className="">
+                <ChatList
+                  chatList={chatList}
+                  setChatList={setChatList}
+                  setSelectedChat={setSelectedChat}
+                />
+              </div>
+              <div className="border-l border-l-black flex-1">
+                {selectedChat ? (
+                  <ChatSection selectedChat={selectedChat} />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    Select a chat to start messaging
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </SelectedUserContext.Provider>
+      </SelectedUserContext.Provider>
+    </>
   );
 };
 
