@@ -2,7 +2,6 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import CameraModal from "./cameraModal";
 import MenuPopover from "./menuPopover";
 import { useReactMediaRecorder } from "react-media-recorder";
-import { uploadFile } from "../../../services/cloudinary/uploadData";
 import useMessages from "../hooks/useMessages";
 import { messageType, SelectedChatTypes } from "../types/chatTypes";
 import RecordingSection from "./recordingSection";

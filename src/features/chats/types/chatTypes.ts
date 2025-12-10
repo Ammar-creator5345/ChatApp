@@ -32,4 +32,10 @@ export type selectedUserDataTypes = {
   isOnline: boolean;
   photoUrl: string;
   uid: string;
+  about: string;
+  phoneNumber: string;
+};
+
+export type DetailsDrawerTypes = {
+  selectedUserData: selectedUserDataTypes | null;
 };

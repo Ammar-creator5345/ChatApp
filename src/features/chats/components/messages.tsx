@@ -15,6 +15,7 @@ type PropsTypes = {
 
 const Messages = ({ messages }: PropsTypes) => {
   const { user } = useAuth();
+  const { openDetailsDrawer, setOpenDetailsDrawer } = useSelectedUserContext();
   const userData = useSelectedUserContext()?.selectedUserData;
   const groupedMessages = useMemo(() => {
     const groups: Record<string, messageType[]> = {};
@@ -36,12 +37,15 @@ const Messages = ({ messages }: PropsTypes) => {
           {groupedMessages[date]?.map((message: messageType) => (
             <div
               key={message.id}
-              className={` mt-[6px] flex items-start gap-1 ${
+              className={` mt-[6px] flex items-start gap-2 ${
                 user?.uid === message.senderId ? "justify-end" : "justify-start"
               }`}
             >
               {user?.uid !== message.senderId && (
-                <div className="w-12 h-12 rounded-full overflow-hidden">
+                <div
+                  onClick={() => setOpenDetailsDrawer(true)}
+                  className="w-10 h-10 cursor-pointer rounded-full overflow-hidden -translate-y-[2px]"
+                >
                   <img
                     src={userData?.photoUrl}
                     alt=""

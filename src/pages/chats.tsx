@@ -21,7 +21,9 @@ import {
   selectedUserDataTypes,
 } from "../features/chats/types/chatTypes";
 import { SelectedUserContext } from "../features/chats/context/selectedUserContext";
-import DetailsDrawer from "../features/chats/components/detailsDrawer";
+import DetailsDrawer, {
+  drawerWidth,
+} from "../features/chats/components/chatDrawer/detailsDrawer";
 
 const Chats = () => {
   const { user } = useAuth();
@@ -32,7 +34,7 @@ const Chats = () => {
   );
   const [selectedUserData, setSelectedUserData] =
     useState<selectedUserDataTypes | null>(null);
-  const [open, setOpen] = useState<boolean>(false);
+  const [openDetailsDrawer, setOpenDetailsDrawer] = useState<boolean>(false);
   const navigate = useNavigate();
   const handleSignOut = () => {
     updateDoc(doc(db, "users", user?.uid as string), { isOnline: false });
@@ -93,6 +95,8 @@ const Chats = () => {
           isOnline: data?.isOnline,
           photoUrl: data?.photoUrl,
           uid: data?.uid,
+          about: data?.about,
+          phoneNumber: data?.phoneNumber,
         });
       } else {
         console.log("No such document!");
@@ -103,9 +107,12 @@ const Chats = () => {
 
   return (
     <>
-      <DetailsDrawer open={open} setOpen={setOpen} />
-      <SelectedUserContext.Provider value={{ selectedUserData }}>
-        <div className={`${open ? "mr-[300px]" : ""}`}>
+      <SelectedUserContext.Provider
+        value={{ selectedUserData, openDetailsDrawer, setOpenDetailsDrawer }}
+      >
+        <button onClick={handleSignOut}>log out</button>
+        <DetailsDrawer selectedUserData={selectedUserData} />
+        <div className={openDetailsDrawer ? `mr-[${drawerWidth}px]` : ""}>
           {loading && (
             <div className="bg-white/10 z-[200] fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
               <CircularProgress color="inherit" />
@@ -113,7 +120,6 @@ const Chats = () => {
           )}
           <div>
             <div className="bg-red-100 flex">
-              <button onClick={() => setOpen(true)}>open</button>
               <div className="">
                 <ChatList
                   chatList={chatList}
