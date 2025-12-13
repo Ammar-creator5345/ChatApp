@@ -1,13 +1,13 @@
-import { DateHeaderFormatter } from "../utils/DateHeaderFormatter";
-import { messageType } from "../types/chatTypes";
-import { useAuth } from "../../../auth/authContext";
+import { DateHeaderFormatter } from "../../../utils/DateHeaderFormatter";
+import { messageType } from "../../../types/chatTypes";
+import { useAuth } from "../../../../auth/context/authContext";
 import { useMemo, useState } from "react";
 import AudioMessage from "./audioMessage";
 import PdfMessage from "./pdfMessage";
 import VideoMessage from "./videoMessage";
 import ImageMessage from "./imageMessage";
 import TextMessage from "./textMessage";
-import { useSelectedUserContext } from "../context/selectedUserContext";
+import { useSelectedUserContext } from "../../../context/selectedUserContext";
 
 type PropsTypes = {
   messages: null | messageType[];

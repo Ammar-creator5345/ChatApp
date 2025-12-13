@@ -1,18 +1,16 @@
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import InputField from "../../shared/components/ui/input";
-import img1 from "../../assets/images/img1.jpg";
-import img2 from "../../assets/images/img2.jpg";
+import InputField from "../shared/components/ui/input";
 import TaskAltOutlinedIcon from "@mui/icons-material/TaskAltOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LockClockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import NoEncryptionOutlinedIcon from "@mui/icons-material/NoEncryptionOutlined";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../InitializeFireBase";
-import { useAuth } from "../authContext";
+import { auth, db } from "../config/firebase/InitializeFireBase";
+import { useAuth } from "../features/auth/context/authContext";
 import CircularProgress from "@mui/material/CircularProgress";
 import { doc, setDoc } from "firebase/firestore";
 

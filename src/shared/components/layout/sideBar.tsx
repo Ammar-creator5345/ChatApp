@@ -3,9 +3,9 @@ import { ReactComponent as StatusIcon } from "../../../assets/icons/StatusIcon.s
 import SettingsIcon from "@mui/icons-material/Settings";
 import { ReactNode, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../../../auth/authContext";
+import { useAuth } from "../../../features/auth/context/authContext";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../auth/InitializeFireBase";
+import { db } from "../../../config/firebase/InitializeFireBase";
 import NavItem from "./navItem";
 import { currentUserDataTypes } from "../../types/globalTypes";
 

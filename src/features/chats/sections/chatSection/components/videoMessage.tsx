@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { useAuth } from "../../../auth/authContext";
-import { TimeFormatter } from "../../../utils/timeFormatter";
-import { messageType } from "../types/chatTypes";
-import { renderStatusIcon } from "../utils/renderStatusIcon";
-import { ShowRecordingTime } from "../utils/showRecordingTime";
+import { useAuth } from "../../../../auth/context/authContext";
+import { TimeFormatter } from "../../../../../utils/timeFormatter";
+import { messageType } from "../../../types/chatTypes";
+import { renderStatusIcon } from "../../../utils/renderStatusIcon";
+import { ShowRecordingTime } from "../../../utils/showRecordingTime";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import VideoOpenModal from "./videoOpenModal";

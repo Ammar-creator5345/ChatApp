@@ -41,7 +41,7 @@ const RecordingSection = ({
   };
 
   return (
-    <div className="p-3 bg-red-300 my-6">
+    <div className="p-3 px-6 bg-red-300">
       <div className="flex items-center justify-end gap-4">
         <button
           onClick={() => {

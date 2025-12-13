@@ -12,7 +12,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import BlockIcon from "@mui/icons-material/Block";
-import ButtonItem from "../buttonItem";
+import ButtonItem from "../../components/buttonItem";
 
 export const drawerWidth = 400;
 
@@ -38,7 +38,7 @@ const DetailsDrawer = ({ selectedUserData }: DetailsDrawerTypes) => {
       }}
     >
       <div className="flex flex-col h-screen">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between px-2">
           <button
             onClick={() => setOpen(false)}
             className="p-1 rounded-lg center hover:bg-[#ecebeb]"

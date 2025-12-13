@@ -1,5 +1,5 @@
 import { signOut } from "firebase/auth";
-import { auth, db } from "../auth/InitializeFireBase";
+import { auth, db } from "../config/firebase/InitializeFireBase";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +12,9 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import ChatList from "../features/chats/components/chatList";
-import ChatSection from "../features/chats/components/chatSection";
-import { useAuth } from "../auth/authContext";
+import ChatList from "../features/chats/sections/chatList/chatList";
+import ChatSection from "../features/chats/sections/chatSection/chatSection";
+import { useAuth } from "../features/auth/context/authContext";
 import {
   ChatListTypes,
   SelectedChatTypes,
@@ -23,7 +23,7 @@ import {
 import { SelectedUserContext } from "../features/chats/context/selectedUserContext";
 import DetailsDrawer, {
   drawerWidth,
-} from "../features/chats/components/chatDrawer/detailsDrawer";
+} from "../features/chats/sections/chatDrawer/detailsDrawer";
 
 const Chats = () => {
   const { user } = useAuth();
@@ -74,7 +74,7 @@ const Chats = () => {
         };
       });
 
-      console.log("✅ Chats for current user:", chatList);
+      console.log("Chats for current user:", chatList);
       setChatList(chatList);
     };
 
@@ -110,9 +110,12 @@ const Chats = () => {
       <SelectedUserContext.Provider
         value={{ selectedUserData, openDetailsDrawer, setOpenDetailsDrawer }}
       >
-        <button onClick={handleSignOut}>log out</button>
         <DetailsDrawer selectedUserData={selectedUserData} />
-        <div className={openDetailsDrawer ? `mr-[${drawerWidth}px]` : ""}>
+        <div
+          style={{
+            marginRight: openDetailsDrawer ? drawerWidth : "",
+          }}
+        >
           {loading && (
             <div className="bg-white/10 z-[200] fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
               <CircularProgress color="inherit" />

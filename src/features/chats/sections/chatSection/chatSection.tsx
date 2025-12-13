@@ -1,14 +1,14 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import CameraModal from "./cameraModal";
-import MenuPopover from "./menuPopover";
+import CameraModal from "./components/cameraModal";
+import MenuPopover from "./components/menuPopover";
 import { useReactMediaRecorder } from "react-media-recorder";
-import useMessages from "../hooks/useMessages";
-import { messageType, SelectedChatTypes } from "../types/chatTypes";
-import RecordingSection from "./recordingSection";
-import InputSection from "./inputSection";
-import Messages from "./messages";
-import FileDrawer from "./fileDrawer";
-import ChatHeader from "./chatHeader";
+import useMessages from "../../hooks/useMessages";
+import { messageType, SelectedChatTypes } from "../../types/chatTypes";
+import RecordingSection from "./components/recordingSection";
+import InputSection from "./components/inputSection";
+import Messages from "./components/messages";
+import FileDrawer from "./components/fileDrawer";
+import ChatHeader from "./components/chatHeader";
 
 type PropTypes = {
   selectedChat: SelectedChatTypes | null;
@@ -141,10 +141,10 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
         <div>
           <ChatHeader />
         </div>
-        <div className="pr-10 pl-4 flex-1 overflow-y-auto my-2 messages_scrollbar">
+        <div className="pr-10 pl-4 flex-1 overflow-y-auto py-3 messages_scrollbar">
           <Messages messages={messages} />
         </div>
-        <div>
+        <div className="bg-red-400">
           {!isRecordingOn ? (
             <InputSection
               text={text}

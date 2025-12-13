@@ -8,8 +8,8 @@ import {
 } from "firebase/firestore";
 import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { messageType } from "../types/chatTypes";
-import { db } from "../../../auth/InitializeFireBase";
-import { useAuth } from "../../../auth/authContext";
+import { db } from "../../../config/firebase/InitializeFireBase";
+import { useAuth } from "../../auth/context/authContext";
 import { uploadFile } from "../../../shared/services/cloudinary/uploadData";
 import { uploadFileToSupabase } from "../../../shared/services/supabase/uploadFile";
 const useMessages = (chatId: string | undefined) => {

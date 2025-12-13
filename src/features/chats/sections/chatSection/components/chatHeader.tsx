@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useSelectedUserContext } from "../context/selectedUserContext";
+import { useSelectedUserContext } from "../../../context/selectedUserContext";
 import MoreVertTwoToneIcon from "@mui/icons-material/MoreVertTwoTone";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ButtonItem from "./buttonItem";
+import ButtonItem from "../../../components/buttonItem";
 import InfoOutlineTwoToneIcon from "@mui/icons-material/InfoOutlineTwoTone";
 import BlockTwoToneIcon from "@mui/icons-material/BlockTwoTone";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";

@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 export type messageType = {
   id: string;
   senderId: string;
@@ -39,3 +41,14 @@ export type selectedUserDataTypes = {
 export type DetailsDrawerTypes = {
   selectedUserData: selectedUserDataTypes | null;
 };
+
+export type SearchUserDrawerTypes = {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+  setSelectedChat: Dispatch<SetStateAction<SelectedChatTypes | null>>;
+};
+export type HeaderProps = {
+  setOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export type UserTypes = selectedUserDataTypes;
