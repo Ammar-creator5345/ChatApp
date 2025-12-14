@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  doc,
   onSnapshot,
   orderBy,
   query,
@@ -49,14 +50,20 @@ const useMessages = (chatId: string | undefined) => {
       const sendingText = text;
       const id = chatId;
       const collectionData = collection(db, "chats", id, "messages");
-      await addDoc(collectionData, {
+      const res = await addDoc(collectionData, {
         senderId: user?.uid,
         text: sendingText,
         timestamp: new Date(),
         type: "text",
         status: "sent",
       });
-      console.log("added Message");
+      const reference = await doc(db, "chats", id);
+      await updateDoc(reference, {
+        lastMessage: text,
+        lastMessageSender: user?.uid,
+        lastMessageTime: new Date(),
+      });
+      console.log("added Message", res);
     } catch (err) {
       console.log(err);
     }

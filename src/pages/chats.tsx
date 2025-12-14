@@ -8,6 +8,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   updateDoc,
   where,
@@ -24,11 +25,13 @@ import { SelectedUserContext } from "../features/chats/context/selectedUserConte
 import DetailsDrawer, {
   drawerWidth,
 } from "../features/chats/sections/chatDrawer/detailsDrawer";
+import UseChats from "../features/chats/hooks/useChats";
+import useChats from "../features/chats/hooks/useChats";
 
 const Chats = () => {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [chatList, setChatList] = useState<ChatListTypes[]>([]);
+  // const [loading, setLoading] = useState(false);
+  const { chatList, setChatList, loading } = useChats(user?.uid!);
   const [selectedChat, setSelectedChat] = useState<SelectedChatTypes | null>(
     null
   );
@@ -36,50 +39,22 @@ const Chats = () => {
     useState<selectedUserDataTypes | null>(null);
   const [openDetailsDrawer, setOpenDetailsDrawer] = useState<boolean>(false);
   const navigate = useNavigate();
-  const handleSignOut = () => {
-    updateDoc(doc(db, "users", user?.uid as string), { isOnline: false });
-    setLoading(true);
-    signOut(auth)
-      .then(() => {
-        console.log("log out successfull");
-        navigate("/login");
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
+  // const handleSignOut = () => {
+  //   updateDoc(doc(db, "users", user?.uid as string), { isOnline: false });
+  //   setLoading(true);
+  //   signOut(auth)
+  //     .then(() => {
+  //       console.log("log out successfull");
+  //       navigate("/login");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // };
 
-  useEffect(() => {
-    const getChats = async () => {
-      if (!user?.uid) return;
-
-      const q = query(
-        collection(db, "chats"),
-        where("participants", "array-contains", user.uid)
-      );
-
-      const snapshot = await getDocs(q);
-      const chatList: ChatListTypes[] = snapshot.docs.map((doc) => {
-        const data = doc.data() as ChatListTypes;
-        const otherIndex = data?.participants?.indexOf(user.uid) === 0 ? 1 : 0;
-        return {
-          ...data,
-          id: doc.id,
-          otherUid: data.participants[otherIndex],
-          otherName: data.participantsNames[otherIndex],
-          otherIndex,
-        };
-      });
-
-      console.log("Chats for current user:", chatList);
-      setChatList(chatList);
-    };
-
-    getChats();
-  }, [user]);
   useEffect(() => {
     const getOtherUserDetails = async () => {
       if (!selectedChat?.otherUid) return;
@@ -116,18 +91,13 @@ const Chats = () => {
             marginRight: openDetailsDrawer ? drawerWidth : "",
           }}
         >
-          {loading && (
-            <div className="bg-white/10 z-[200] fixed top-0 bottom-0 left-0 right-0 flex items-center justify-center">
-              <CircularProgress color="inherit" />
-            </div>
-          )}
           <div>
             <div className="bg-red-100 flex">
               <div className="">
                 <ChatList
                   chatList={chatList}
-                  setChatList={setChatList}
                   setSelectedChat={setSelectedChat}
+                  loading={loading}
                 />
               </div>
               <div className="border-l border-l-black flex-1">

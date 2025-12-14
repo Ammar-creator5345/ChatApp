@@ -1,28 +1,19 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { db } from "../../../config/firebase/InitializeFireBase";
-import { UserTypes } from "../types/chatTypes";
-import { useAuth } from "../../auth/context/authContext";
+import { getChats } from "../services/chatService";
+import { ChatListTypes } from "../types/chatTypes";
 
-type propsTypes = {
-  open: boolean;
-};
-
-const useChats = ({ open }: propsTypes) => {
-  const { user } = useAuth();
-  const [users, setUsers] = useState<UserTypes[] | null>(null);
-
+const useChats = (userId: string) => {
+  const [chatList, setChatList] = useState<ChatListTypes[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
-    if (!open && !user?.uid) return;
-    const q = query(collection(db, "users"));
-    const unsub = onSnapshot(q, (doc) => {
-      let data = doc.docs.map((doc) => doc.data());
-      setUsers(data as UserTypes[]);
-      console.log(data);
+    if (!userId) return;
+    const unSub = getChats(userId, (chats) => {
+      setChatList(chats);
+      setLoading(false);
     });
-    return unsub;
-  }, [user?.uid, open]);
-  return { users };
+    return () => unSub();
+  }, [userId]);
+  return { chatList, setChatList, loading };
 };
 
 export default useChats;

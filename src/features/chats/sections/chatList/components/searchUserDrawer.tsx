@@ -3,10 +3,18 @@ import { SearchUserDrawerTypes, UserTypes } from "../../../types/chatTypes";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useAuth } from "../../../../auth/context/authContext";
-import useChats from "../../../hooks/useChats";
 import UserSection from "./userSection";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { db } from "../../../../../config/firebase/InitializeFireBase";
+import useUsers from "../../../hooks/useUsers";
 
 const SearchUserDrawer = ({
   open,
@@ -14,7 +22,7 @@ const SearchUserDrawer = ({
   setSelectedChat,
 }: SearchUserDrawerTypes) => {
   const { user } = useAuth();
-  const { users } = useChats({ open });
+  const { users } = useUsers({ open });
   const [search, setSearch] = useState("");
 
   const filteredUsers = users
@@ -34,12 +42,41 @@ const SearchUserDrawer = ({
       where("participants", "array-contains", currentUserId)
     );
     const snapshot = await getDocs(q);
-    console.log(snapshot.docs.map((chat) => chat?.data()));
-    const existingChat = snapshot.docs.find((chat) => {
-      const data = chat.data();
-      return data.participants.includes(otherUserId);
+    const existingChat = snapshot.docs.map((doc: any) => ({
+      id: doc?.id,
+      ...doc.data(),
+    }));
+    const chatExists = existingChat.find((chat) => {
+      return chat?.participants.includes(otherUserId);
     });
-    console.log(existingChat);
+    console.log(chatExists);
+    if (chatExists) {
+      console.log("exists");
+      setSelectedChat({
+        id: chatExists?.id,
+        name: otherUser?.displayName,
+        participants: [currentUserId as string, otherUserId],
+        otherUid: otherUserId,
+      });
+    } else {
+      console.log("doesn't exist");
+      const newChat = await addDoc(collection(db, "chats"), {
+        lastMessage: "",
+        lastMessageSender: "",
+        lastMessageTime: "",
+        participants: [currentUserId as string, otherUserId],
+        participantsNames: [user?.displayName, otherUser.displayName],
+      });
+      setSelectedChat({
+        id: newChat?.id,
+        name: otherUser.displayName,
+        participants: [currentUserId!, otherUserId],
+        otherUid: otherUserId,
+      });
+    }
+    setTimeout(() => {
+      setOpen(false);
+    }, 500);
   };
 
   return (
