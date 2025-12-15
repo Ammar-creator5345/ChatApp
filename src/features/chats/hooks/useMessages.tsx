@@ -16,6 +16,7 @@ import { uploadFileToSupabase } from "../../../shared/services/supabase/uploadFi
 const useMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<null | messageType[]>(null);
   const { user } = useAuth();
+  const [messagesLoading, setMessagesLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!chatId) return;
@@ -47,6 +48,7 @@ const useMessages = (chatId: string | undefined) => {
   const sendMessage = async (text: string) => {
     try {
       if (!text.trim() || !chatId) return;
+      setMessagesLoading(true);
       const sendingText = text;
       const id = chatId;
       const collectionData = collection(db, "chats", id, "messages");
@@ -66,6 +68,8 @@ const useMessages = (chatId: string | undefined) => {
       console.log("added Message", res);
     } catch (err) {
       console.log(err);
+    } finally {
+      setMessagesLoading(false);
     }
   };
   const sendFile = async (fileType: string, file: any) => {
@@ -102,7 +106,7 @@ const useMessages = (chatId: string | undefined) => {
     }
   };
 
-  return { messages, sendMessage, sendFile };
+  return { messages, sendMessage, sendFile, messagesLoading };
 };
 
 export default useMessages;

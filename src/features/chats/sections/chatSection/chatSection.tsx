@@ -17,7 +17,7 @@ type PropTypes = {
 const ChatSection = ({ selectedChat }: PropTypes) => {
   const chatId = selectedChat?.id;
   const [text, setText] = useState<string>("");
-  const { messages, sendMessage, sendFile } = useMessages(chatId);
+  const { messages, sendMessage, sendFile,messagesLoading } = useMessages(chatId);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [openCameraModal, setOpenCameraModal] = useState<boolean>(false);
   const {
@@ -142,7 +142,7 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
           <ChatHeader />
         </div>
         <div className="pr-10 pl-4 flex-1 overflow-y-auto py-3 messages_scrollbar">
-          <Messages messages={messages} />
+          <Messages messages={messages} messagesLoading={messagesLoading}/>
         </div>
         <div className="bg-red-400">
           {!isRecordingOn ? (

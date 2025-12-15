@@ -9,7 +9,7 @@ export type currentUserDataTypes = {
   displayName: string;
   email: string;
   isOnline: boolean;
-  photoURL: string;
+  photoUrl: string;
   uid: string;
   about: string;
   phoneNumber: string;

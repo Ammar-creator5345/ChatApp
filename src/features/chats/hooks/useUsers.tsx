@@ -10,19 +10,22 @@ type propsTypes = {
 
 const useUsers = ({ open }: propsTypes) => {
   const { user } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
   const [users, setUsers] = useState<UserTypes[] | null>(null);
 
   useEffect(() => {
     if (!open) return;
+    setLoading(true);
     const q = query(collection(db, "users"));
     const unsub = onSnapshot(q, (doc) => {
       let data = doc.docs.map((doc) => doc.data());
       setUsers(data as UserTypes[]);
-      console.log(data);
+      console.log("All users", data);
+      setLoading(false);
     });
     return unsub;
   }, [user?.uid, open]);
-  return { users };
+  return { users, loading };
 };
 
 export default useUsers;

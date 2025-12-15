@@ -43,7 +43,7 @@ const SideBar = () => {
         className="w-10 h-10 bg-black rounded-full overflow-hidden"
       >
         <img
-          src={currentUserData?.photoURL}
+          src={currentUserData?.photoUrl}
           alt=""
           className="w-full h-full object-cover"
         />

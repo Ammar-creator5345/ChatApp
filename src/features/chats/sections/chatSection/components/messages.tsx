@@ -11,9 +11,10 @@ import { useSelectedUserContext } from "../../../context/selectedUserContext";
 
 type PropsTypes = {
   messages: null | messageType[];
+  messagesLoading: boolean;
 };
 
-const Messages = ({ messages }: PropsTypes) => {
+const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
   const { user } = useAuth();
   const { openDetailsDrawer, setOpenDetailsDrawer } = useSelectedUserContext();
   const userData = useSelectedUserContext()?.selectedUserData;

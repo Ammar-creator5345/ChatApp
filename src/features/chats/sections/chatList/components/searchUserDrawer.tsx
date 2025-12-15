@@ -4,17 +4,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useAuth } from "../../../../auth/context/authContext";
 import UserSection from "./userSection";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-} from "firebase/firestore";
-import { db } from "../../../../../config/firebase/InitializeFireBase";
 import useUsers from "../../../hooks/useUsers";
+import { getOrCreateChat } from "../services/chatService";
+import SearchDrawerSkeleton from "./searchDrawerSkeleton";
 
 const SearchUserDrawer = ({
   open,
@@ -22,7 +14,7 @@ const SearchUserDrawer = ({
   setSelectedChat,
 }: SearchUserDrawerTypes) => {
   const { user } = useAuth();
-  const { users } = useUsers({ open });
+  const { users, loading } = useUsers({ open });
   const [search, setSearch] = useState("");
 
   const filteredUsers = users
@@ -35,45 +27,8 @@ const SearchUserDrawer = ({
   const otherUsers = filteredUsers?.filter((u) => u?.uid !== user?.uid);
 
   const handleUserClick = async (otherUser: UserTypes) => {
-    const currentUserId = user?.uid;
-    const otherUserId = otherUser?.uid;
-    const q = query(
-      collection(db, "chats"),
-      where("participants", "array-contains", currentUserId)
-    );
-    const snapshot = await getDocs(q);
-    const existingChat = snapshot.docs.map((doc: any) => ({
-      id: doc?.id,
-      ...doc.data(),
-    }));
-    const chatExists = existingChat.find((chat) => {
-      return chat?.participants.includes(otherUserId);
-    });
-    console.log(chatExists);
-    if (chatExists) {
-      console.log("exists");
-      setSelectedChat({
-        id: chatExists?.id,
-        name: otherUser?.displayName,
-        participants: [currentUserId as string, otherUserId],
-        otherUid: otherUserId,
-      });
-    } else {
-      console.log("doesn't exist");
-      const newChat = await addDoc(collection(db, "chats"), {
-        lastMessage: "",
-        lastMessageSender: "",
-        lastMessageTime: "",
-        participants: [currentUserId as string, otherUserId],
-        participantsNames: [user?.displayName, otherUser.displayName],
-      });
-      setSelectedChat({
-        id: newChat?.id,
-        name: otherUser.displayName,
-        participants: [currentUserId!, otherUserId],
-        otherUid: otherUserId,
-      });
-    }
+    const chat = await getOrCreateChat(user, otherUser);
+    setSelectedChat(chat);
     setTimeout(() => {
       setOpen(false);
     }, 500);
@@ -116,25 +71,33 @@ const SearchUserDrawer = ({
             </div>
           )}
 
-          <div className="mt-3">
-            {otherUsers?.length > 1 && (
-              <h1 className="text-lg font-bold">Other users</h1>
-            )}
+          {loading ? (
+            <div>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <SearchDrawerSkeleton key={i} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-3">
+              {otherUsers?.length > 1 && (
+                <h1 className="text-lg font-bold">Other users</h1>
+              )}
 
-            {otherUsers?.length > 0 ? (
-              otherUsers.map((user) => (
-                <UserSection
-                  key={user.uid}
-                  user={user}
-                  handleClick={() => handleUserClick(user)}
-                />
-              ))
-            ) : (
-              <p className="text-sm text-center text-gray-500 mt-2">
-                No result found for '{search}'
-              </p>
-            )}
-          </div>
+              {otherUsers?.length > 0 ? (
+                otherUsers.map((user) => (
+                  <UserSection
+                    key={user.uid}
+                    user={user}
+                    handleClick={() => handleUserClick(user)}
+                  />
+                ))
+              ) : (
+                <p className="text-sm text-center text-gray-500 mt-2">
+                  No result found for '{search}'
+                </p>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
