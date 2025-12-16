@@ -32,7 +32,7 @@ export const getOrCreateChat = async (
     const newChat = await addDoc(collection(db, "chats"), {
       lastMessage: "",
       lastMessageSender: "",
-      lastMessageTime: "",
+      lastMessageTime: new Date(),
       participants: [currentUser?.uid as string, otherUser?.uid],
       participantsNames: [currentUser?.displayName, otherUser.displayName],
     });

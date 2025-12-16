@@ -85,7 +85,11 @@ const Chats = () => {
       <SelectedUserContext.Provider
         value={{ selectedUserData, openDetailsDrawer, setOpenDetailsDrawer }}
       >
-        <DetailsDrawer selectedUserData={selectedUserData} />
+        <DetailsDrawer
+          selectedChat={selectedChat}
+          setSelectedChat={setSelectedChat}
+          selectedUserData={selectedUserData}
+        />
         <div
           style={{
             marginRight: openDetailsDrawer ? drawerWidth : "",

@@ -4,8 +4,9 @@ type buttonItem = {
   icon: ReactNode;
   className?: any;
   text: string;
-  handleClick?: () => {};
+  handleClick?: () => void;
   isMenu?: boolean;
+  status?: boolean;
 };
 
 const ButtonItem = ({
@@ -14,10 +15,15 @@ const ButtonItem = ({
   text,
   handleClick,
   isMenu = false,
+  status = false,
 }: buttonItem) => {
   return (
     <button
+      disabled={status}
       onClick={handleClick}
+      style={{
+        cursor: status ? "not-allowed" : "pointer",
+      }}
       className={
         isMenu
           ? className

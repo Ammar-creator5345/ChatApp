@@ -14,3 +14,10 @@ export type currentUserDataTypes = {
   about: string;
   phoneNumber: string;
 };
+
+export type AlertMessageProps = {
+  text: string;
+  open: boolean;
+  duration?: number;
+  onclose?: () => void;
+};

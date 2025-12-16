@@ -40,6 +40,8 @@ export type selectedUserDataTypes = {
 
 export type DetailsDrawerTypes = {
   selectedUserData: selectedUserDataTypes | null;
+  selectedChat: SelectedChatTypes | null;
+  setSelectedChat: Dispatch<SetStateAction<SelectedChatTypes | null>>;
 };
 
 export type SearchUserDrawerTypes = {

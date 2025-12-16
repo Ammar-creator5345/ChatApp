@@ -1,5 +1,8 @@
 import {
   collection,
+  deleteDoc,
+  doc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
@@ -33,4 +36,14 @@ export const getChats = (
     callBack(chatList);
   });
   return unsub;
+};
+
+export const deleteChat = async (id: string) => {
+  const messagesRef = collection(db, "chats", id, "messages");
+  const messageSnap = await getDocs(messagesRef);
+  const deletionDocs = messageSnap?.docs?.map((doc) => {
+    deleteDoc(doc?.ref);
+  });
+  await Promise.all(deletionDocs);
+  await deleteDoc(doc(db, "chats", id));
 };
