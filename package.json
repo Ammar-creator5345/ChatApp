@@ -6,6 +6,8 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/react-fontawesome": "^3.1.1",
     "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@supabase/supabase-js": "^2.86.0",
@@ -23,6 +25,7 @@
     "react-audio-visualize": "^1.2.0",
     "react-audio-voice-recorder": "^2.2.0",
     "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
     "react-media-recorder": "^1.7.2",
     "react-player": "^3.4.0",
     "react-router-dom": "^7.9.5",

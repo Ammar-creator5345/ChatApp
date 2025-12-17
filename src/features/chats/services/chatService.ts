@@ -2,10 +2,12 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { db } from "../../../config/firebase/InitializeFireBase";
@@ -46,4 +48,17 @@ export const deleteChat = async (id: string) => {
   });
   await Promise.all(deletionDocs);
   await deleteDoc(doc(db, "chats", id));
+};
+
+export const toggleFavouriteChat = async (
+  id: string,
+  userId: string,
+  isFavourite: boolean
+) => {
+  const docRef = doc(db, "chats", id);
+  const snap = await getDoc(docRef);
+  // console.log(snap.data());
+  await updateDoc(docRef, {
+    [`favourites.${userId}`]: isFavourite,
+  });
 };

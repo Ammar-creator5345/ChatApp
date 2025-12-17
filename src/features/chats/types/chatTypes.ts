@@ -12,14 +12,16 @@ export type messageType = {
 };
 
 export type ChatListTypes = {
-  id: string | number;
+  id: string ;
   lastMessage: string;
   lastMessageSender: string;
   lastMessageTime: { seconds: number; nanoseconds: number };
   otherIndex: number | string;
   otherName: string;
+  otherUid: string;
   participants: string[];
   participantsNames: string[];
+  favourites: Record<string, boolean>;
 };
 export type SelectedChatTypes = {
   id: string;
@@ -42,6 +44,7 @@ export type DetailsDrawerTypes = {
   selectedUserData: selectedUserDataTypes | null;
   selectedChat: SelectedChatTypes | null;
   setSelectedChat: Dispatch<SetStateAction<SelectedChatTypes | null>>;
+  chatList: ChatListTypes[];
 };
 
 export type SearchUserDrawerTypes = {
@@ -51,6 +54,7 @@ export type SearchUserDrawerTypes = {
 };
 export type HeaderProps = {
   setOpen: Dispatch<SetStateAction<boolean>>;
+  setChatsType: Dispatch<SetStateAction<"all" | "unread" | "favourites">>;
 };
 
 export type UserTypes = selectedUserDataTypes;

@@ -3,8 +3,10 @@ import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Dispatch, SetStateAction } from "react";
 import { HeaderProps } from "../../../types/chatTypes";
+import { Button } from "@mui/material";
+import ChatHeaderButton from "./ui/button";
 
-const Header = ({ setOpen }: HeaderProps) => {
+const Header = ({ setOpen, setChatsType }: HeaderProps) => {
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -30,15 +32,25 @@ const Header = ({ setOpen }: HeaderProps) => {
         />
       </div>
       <div className="flex items-center gap-2 m-2">
-        <button className="rounded-full px-4 py-[2px] border border-[#363636] center hover:bg-[#e2c8c8]">
+        {/* <button className="rounded-full px-4 py-[2px] border border-[#363636] center hover:bg-[#e2c8c8]">
           All
-        </button>
-        <button className="rounded-full px-4 py-[2px] border border-[#363636] center hover:bg-[#e2c8c8]">
+        </button> */}
+        <ChatHeaderButton text="All" handleClick={() => setChatsType("all")} />
+        <ChatHeaderButton
+          text="Unread"
+          handleClick={() => setChatsType("unread")}
+        />
+        <ChatHeaderButton
+          text="Favourites"
+          handleClick={() => setChatsType("favourites")}
+        />
+
+        {/* <button className="rounded-full px-4 py-[2px] border border-[#363636] center hover:bg-[#e2c8c8]">
           Unread
         </button>
         <button className="rounded-full px-4 py-[2px] border border-[#363636] center hover:bg-[#e2c8c8]">
           Favourites
-        </button>
+        </button> */}
       </div>
     </div>
   );

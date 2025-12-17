@@ -4,7 +4,7 @@ import {
   DetailsDrawerTypes,
   selectedUserDataTypes,
 } from "../../types/chatTypes";
-import { Dispatch, memo, SetStateAction, useState } from "react";
+import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
 import { useSelectedUserContext } from "../../context/selectedUserContext";
 import EditIcon from "@mui/icons-material/Edit";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -13,8 +13,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import BlockIcon from "@mui/icons-material/Block";
 import ButtonItem from "../../components/buttonItem";
-import { deleteChat } from "../../services/chatService";
+import { deleteChat, toggleFavouriteChat } from "../../services/chatService";
 import AlertMessage from "../../../../shared/components/layout/alertMessage";
+import { useAuth } from "../../../auth/context/authContext";
 
 export const drawerWidth = 400;
 
@@ -22,12 +23,22 @@ const DetailsDrawer = ({
   selectedUserData,
   selectedChat,
   setSelectedChat,
+  chatList: chatList,
 }: DetailsDrawerTypes) => {
   const { openDetailsDrawer: open, setOpenDetailsDrawer: setOpen } =
     useSelectedUserContext();
   const [deleting, setDeleting] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
+  const { user } = useAuth();
+  const selected_chat = chatList?.find((chat) => chat?.id === selectedChat?.id);
+  const [isFavourite, setIsFavourite] = useState<boolean>(false);
+  console.log("selected_chat", selected_chat);
+  useEffect(() => {
+    if (!selected_chat || !user?.uid) return;
+    const status = selected_chat.favourites?.[user.uid] ?? false;
+    setIsFavourite(status);
+  }, [selected_chat, user?.uid]);
   const handleDeleteChat = async () => {
     if (!selectedChat?.id) return;
     try {
@@ -40,6 +51,11 @@ const DetailsDrawer = ({
       setOpen(false);
       setDeleting(false);
     }
+  };
+  const handleFavouriteChat = () => {
+    if (!selectedChat?.id || !user?.uid) return;
+    toggleFavouriteChat(selectedChat?.id, user?.uid, !isFavourite);
+    setIsFavourite((prev) => !prev);
   };
   return (
     <>
@@ -105,7 +121,8 @@ const DetailsDrawer = ({
             />
             <ButtonItem
               text="Add to Favourites"
-              icon={<FavoriteBorderIcon />}
+              icon={isFavourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+              handleClick={handleFavouriteChat}
             />
             <ButtonItem
               text="Delete chat"

@@ -83,12 +83,13 @@ const Chats = () => {
   return (
     <>
       <SelectedUserContext.Provider
-        value={{ selectedUserData, openDetailsDrawer, setOpenDetailsDrawer }}
+        value={{ selectedUserData, openDetailsDrawer, setOpenDetailsDrawer,setSelectedChat }}
       >
         <DetailsDrawer
           selectedChat={selectedChat}
           setSelectedChat={setSelectedChat}
           selectedUserData={selectedUserData}
+          chatList={chatList}
         />
         <div
           style={{

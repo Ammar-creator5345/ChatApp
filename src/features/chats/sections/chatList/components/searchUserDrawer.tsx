@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { SearchUserDrawerTypes, UserTypes } from "../../../types/chatTypes";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -16,15 +16,15 @@ const SearchUserDrawer = ({
   const { user } = useAuth();
   const { users, loading } = useUsers({ open });
   const [search, setSearch] = useState("");
+  const filteredUsers = useMemo(() => {
+    if (!users) return [];
+    return users?.filter((u) =>
+      u?.displayName?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [users, user]);
 
-  const filteredUsers = users
-    ? users?.filter((u) =>
-        u?.displayName?.toLowerCase().includes(search.toLowerCase())
-      )
-    : [];
-
-  const activeUser = filteredUsers?.filter((u) => u?.uid === user?.uid);
-  const otherUsers = filteredUsers?.filter((u) => u?.uid !== user?.uid);
+  const activeUser = filteredUsers.filter((u) => u?.uid === user?.uid);
+  const otherUsers = filteredUsers.filter((u) => u?.uid !== user?.uid);
 
   const handleUserClick = async (otherUser: UserTypes) => {
     const chat = await getOrCreateChat(user, otherUser);
@@ -65,7 +65,7 @@ const SearchUserDrawer = ({
         <div className="overflow-y-auto">
           {activeUser?.length > 0 && (
             <div className="mt-3">
-              {activeUser.map((user) => (
+              {activeUser.map((user: UserTypes) => (
                 <UserSection key={user.uid} user={user} isActiveUser={true} />
               ))}
             </div>
@@ -84,7 +84,7 @@ const SearchUserDrawer = ({
               )}
 
               {otherUsers?.length > 0 ? (
-                otherUsers.map((user) => (
+                otherUsers.map((user: UserTypes) => (
                   <UserSection
                     key={user.uid}
                     user={user}
