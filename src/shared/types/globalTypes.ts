@@ -5,7 +5,7 @@ export type NavItemProps = {
   navigationUrl: string;
 };
 
-export type currentUserDataTypes = {
+export type ActiveUserTypes = {
   displayName: string;
   email: string;
   isOnline: boolean;
@@ -13,6 +13,7 @@ export type currentUserDataTypes = {
   uid: string;
   about: string;
   phoneNumber: string;
+  blockedUsers: string[];
 };
 
 export type AlertMessageProps = {

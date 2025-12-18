@@ -82,7 +82,6 @@ const SearchUserDrawer = ({
               {otherUsers?.length > 1 && (
                 <h1 className="text-lg font-bold">Other users</h1>
               )}
-
               {otherUsers?.length > 0 ? (
                 otherUsers.map((user: UserTypes) => (
                   <UserSection

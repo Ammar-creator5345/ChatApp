@@ -11,6 +11,12 @@ import { useAuth } from "../../../../auth/context/authContext";
 import { deleteChat, toggleFavouriteChat } from "../../../services/chatService";
 import AlertMessage from "../../../../../shared/components/layout/alertMessage";
 import { useSelectedUserContext } from "../../../context/selectedUserContext";
+import ConfirmationModal from "../../../components/layout/confirmationModal";
+import {
+  blockUser,
+  unBlockUser,
+} from "../../../../../shared/services/firebase/userService";
+import useActiveUser from "../../../../../shared/hooks/useActiveUser";
 
 type propsTypes = {
   openPopover: boolean;
@@ -32,6 +38,18 @@ const PopOver = ({
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
   const { setSelectedChat } = useSelectedUserContext();
+  const [modalAction, setModalAction] = useState<"block" | "delete" | null>(
+    null
+  );
+  const { activeUser } = useActiveUser();
+  const [isBlocked, setIsBlocked] = useState(false);
+
+  useEffect(() => {
+    if (activeUser && chat) {
+      setIsBlocked(activeUser.blockedUsers.includes(chat.otherUid));
+    }
+  }, [activeUser, chat]);
+
   useEffect(() => {
     console.log(chat);
     if (!chat || !user?.uid) return;
@@ -55,9 +73,38 @@ const PopOver = ({
     setAlertMessage("Successfully Deleted the Chat!");
     setShowAlert(true);
   };
+  const handleBlockUser = () => {
+    if (!user?.uid || !chat?.id) return;
+    if (isBlocked) {
+      unBlockUser(user?.uid, chat.otherUid);
+      setIsBlocked(false);
+    } else {
+      blockUser(user?.uid, chat.otherUid);
+      setIsBlocked(true);
+    }
+  };
 
   return (
     <>
+      <ConfirmationModal
+        text={
+          modalAction === "block"
+            ? "Are u sure u want to block this user?"
+            : "Are u sure u want to delete chat"
+        }
+        open={!!modalAction}
+        setOpen={() => setModalAction(null)}
+        onConfirm={() => {
+          if (modalAction === "delete") {
+            handleDeleteChat();
+            setModalAction(null);
+          }
+          if (modalAction === "block") {
+            handleBlockUser();
+            setModalAction(null);
+          }
+        }}
+      />
       <AlertMessage
         text={alertMessage}
         open={showAlert}
@@ -95,9 +142,13 @@ const PopOver = ({
         />
         <ButtonItem
           icon={<BlockTwoToneIcon />}
-          text="Block"
+          text={isBlocked ? "Unblock" : "Block"}
           isMenu={true}
           className="flex items-center gap-4 w-full p-2 hover:bg-[#e4e2e2]"
+          handleClick={() => {
+            setModalAction("block");
+            handleClose();
+          }}
         />
         <ButtonItem
           icon={<DeleteIcon />}
@@ -105,8 +156,8 @@ const PopOver = ({
           isMenu={true}
           className="flex items-center gap-4 w-full p-2 hover:bg-[#e4e2e2]"
           handleClick={() => {
+            setModalAction("delete");
             handleClose();
-            handleDeleteChat();
           }}
         />
       </Popover>

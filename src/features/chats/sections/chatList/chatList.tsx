@@ -8,6 +8,8 @@ import ChatRowSkeleton from "./components/chatRowSkeleton";
 import { useAuth } from "../../../auth/context/authContext";
 import { ReactComponent as DropdownIcon } from "../../../../assets/icons/dropdown.svg";
 import PopOver from "./components/popover";
+import ConfirmationModal from "../../components/layout/confirmationModal";
+import useActiveUser from "../../../../shared/hooks/useActiveUser";
 
 type propsTypes = {
   chatList: ChatListTypes[];
@@ -36,6 +38,8 @@ const ChatList = ({ chatList, setSelectedChat, loading }: propsTypes) => {
   const [selected_chat, setSelected_chat] = useState<ChatListTypes | null>(
     null
   );
+  const [openModal, setOpenModal] = useState<boolean>(false);
+
   const allChats = chatList;
   const favouriteChats = useMemo(() => {
     if (!user) return;
@@ -58,10 +62,9 @@ const ChatList = ({ chatList, setSelectedChat, loading }: propsTypes) => {
       otherUid: value?.otherUid,
     });
   };
-
+  useActiveUser();
   return (
     <>
-      
       <PopOver
         openPopover={openPopover}
         handleClose={handleClose}
