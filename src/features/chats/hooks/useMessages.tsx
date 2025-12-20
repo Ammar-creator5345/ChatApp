@@ -2,6 +2,7 @@ import {
   addDoc,
   collection,
   doc,
+  increment,
   onSnapshot,
   orderBy,
   query,
@@ -31,6 +32,9 @@ const useMessages = (chatId: string | undefined) => {
       })) as messageType[];
       setMessages(chats);
       console.log(chats);
+      updateDoc(doc(db, "chats", chatId), {
+        [`unreadCount.${user?.uid}`]: 0,
+      });
       res.docChanges().forEach((change: any) => {
         const msg = change.doc.data();
         if (
@@ -45,7 +49,7 @@ const useMessages = (chatId: string | undefined) => {
     return unSubcribe;
   }, [chatId]);
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = async (text: string, otherUid: string) => {
     try {
       if (!text.trim() || !chatId) return;
       setMessagesLoading(true);
@@ -64,6 +68,7 @@ const useMessages = (chatId: string | undefined) => {
         lastMessage: text,
         lastMessageSender: user?.uid,
         lastMessageTime: new Date(),
+        [`unreadCount.${otherUid}`]: increment(1),
       });
       console.log("added Message", res);
     } catch (err) {

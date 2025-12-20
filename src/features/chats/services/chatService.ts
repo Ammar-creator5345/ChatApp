@@ -50,14 +50,25 @@ export const deleteChat = async (id: string) => {
   await deleteDoc(doc(db, "chats", id));
 };
 
+export const clearChat = async (id: string) => {
+  const messagesRef = collection(db, "chats", id, "messages");
+  const messageSnap = await getDocs(messagesRef);
+  const deletionDocs = messageSnap?.docs?.map((doc) => {
+    deleteDoc(doc?.ref);
+  });
+  await Promise.all(deletionDocs);
+  updateDoc(doc(db, "chats", id), {
+    lastMessage: "",
+  });
+};
+
 export const toggleFavouriteChat = async (
   id: string,
   userId: string,
   isFavourite: boolean
 ) => {
   const docRef = doc(db, "chats", id);
-  const snap = await getDoc(docRef);
-  // console.log(snap.data());
+  await getDoc(docRef);
   await updateDoc(docRef, {
     [`favourites.${userId}`]: isFavourite,
   });

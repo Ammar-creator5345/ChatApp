@@ -1,11 +1,15 @@
 import { useMemo, useState } from "react";
-import { SearchUserDrawerTypes, UserTypes } from "../../../types/chatTypes";
+import {
+  SearchUserDrawerTypes,
+  SelectedChatTypes,
+  UserTypes,
+} from "../../../../types/chatTypes";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useAuth } from "../../../../auth/context/authContext";
+import { useAuth } from "../../../../../auth/context/authContext";
 import UserSection from "./userSection";
-import useUsers from "../../../hooks/useUsers";
-import { getOrCreateChat } from "../services/chatService";
+import useUsers from "../../../../hooks/useUsers";
+import { getOrCreateChat } from "../../services/chatService";
 import SearchDrawerSkeleton from "./searchDrawerSkeleton";
 
 const SearchUserDrawer = ({
@@ -21,14 +25,14 @@ const SearchUserDrawer = ({
     return users?.filter((u) =>
       u?.displayName?.toLowerCase().includes(search.toLowerCase())
     );
-  }, [users, user]);
+  }, [users, user, search]);
 
   const activeUser = filteredUsers.filter((u) => u?.uid === user?.uid);
   const otherUsers = filteredUsers.filter((u) => u?.uid !== user?.uid);
 
   const handleUserClick = async (otherUser: UserTypes) => {
     const chat = await getOrCreateChat(user, otherUser);
-    setSelectedChat(chat);
+    setSelectedChat(chat as SelectedChatTypes);
     setTimeout(() => {
       setOpen(false);
     }, 500);

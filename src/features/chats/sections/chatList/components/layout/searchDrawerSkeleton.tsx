@@ -1,4 +1,4 @@
-import SkeletonMui from "../../../../../shared/components/ui/skeletion";
+import SkeletonMui from "../../../../../../shared/components/ui/skeletion";
 
 const SearchDrawerSkeleton = () => {
   return (

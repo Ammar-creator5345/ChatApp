@@ -3,19 +3,20 @@ import { ActiveUserTypes } from "../types/globalTypes";
 import { useAuth } from "../../features/auth/context/authContext";
 import { getActiveUser } from "../services/firebase/userService";
 
-const useActiveUser = () => {
+const useActiveUser = (otherUid: string) => {
   const { user } = useAuth();
   const [activeUser, setActiveUser] = useState<ActiveUserTypes | null>(null);
+  const isBlocked = activeUser && activeUser.blockedUsers.includes(otherUid);
+
   useEffect(() => {
-    const getActiveUserData = async () => {
-      if (!user) return;
-      const res = await getActiveUser(user.uid);
-      console.log("Active User", res);
-      setActiveUser(res);
-    };
-    getActiveUserData();
+    if (!user) return;
+    const unSub = getActiveUser(user.uid, (data) => {
+      setActiveUser(data);
+      console.log("Active User", data);
+    });
+    return () => unSub();
   }, [user]);
-  return { activeUser };
+  return { activeUser, isBlocked };
 };
 
 export default useActiveUser;

@@ -3,21 +3,20 @@ import {
   arrayUnion,
   doc,
   getDoc,
+  onSnapshot,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../config/firebase/InitializeFireBase";
 import { ActiveUserTypes } from "../../types/globalTypes";
 
-export const getActiveUser = async (activeUserId: string) => {
+export const getActiveUser = (
+  activeUserId: string,
+  callback: (data: ActiveUserTypes | null) => void
+) => {
   const docRef = doc(db, "users", activeUserId);
-  const docSnap = await getDoc(docRef);
-  if (docSnap.exists()) {
-    const data = docSnap.data() as ActiveUserTypes;
-    return data;
-  } else {
-    console.log("No such document!");
-    return null;
-  }
+  return onSnapshot(docRef, (snap) => {
+    callback(snap.data() as ActiveUserTypes);
+  });
 };
 
 export const blockUser = async (activeUserId: string, otherUserId: string) => {

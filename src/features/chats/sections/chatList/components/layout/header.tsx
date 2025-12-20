@@ -2,11 +2,11 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Dispatch, SetStateAction } from "react";
-import { HeaderProps } from "../../../types/chatTypes";
+import { HeaderProps } from "../../../../types/chatTypes";
 import { Button } from "@mui/material";
-import ChatHeaderButton from "./ui/button";
+import ChatHeaderButton from "../ui/button";
 
-const Header = ({ setOpen, setChatsType }: HeaderProps) => {
+const Header = ({ setOpen, setChatsType, search, setSearch }: HeaderProps) => {
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -29,6 +29,8 @@ const Header = ({ setOpen, setChatsType }: HeaderProps) => {
           type="text"
           className="bg-transparent w-full p-2 outline-none border-none"
           placeholder="Search any chat..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
       <div className="flex items-center gap-2 m-2">

@@ -9,6 +9,8 @@ import InputSection from "./components/inputSection";
 import Messages from "./components/messages";
 import FileDrawer from "./components/fileDrawer";
 import ChatHeader from "./components/chatHeader";
+import useActiveUser from "../../../../shared/hooks/useActiveUser";
+import BlockOutlinedIcon from "@mui/icons-material/BlockOutlined";
 
 type PropTypes = {
   selectedChat: SelectedChatTypes | null;
@@ -17,7 +19,8 @@ type PropTypes = {
 const ChatSection = ({ selectedChat }: PropTypes) => {
   const chatId = selectedChat?.id;
   const [text, setText] = useState<string>("");
-  const { messages, sendMessage, sendFile,messagesLoading } = useMessages(chatId);
+  const { messages, sendMessage, sendFile, messagesLoading } =
+    useMessages(chatId);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [openCameraModal, setOpenCameraModal] = useState<boolean>(false);
   const {
@@ -43,6 +46,7 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [image, setImage] = useState<string>("");
   const [file, setFile] = useState<Record<string, any>>({});
+  const { activeUser, isBlocked } = useActiveUser(selectedChat?.otherUid!);
   const handleCloseDrawer = (): void => {
     setOpenDrawer(false);
     setImage("");
@@ -68,7 +72,8 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     setRecordingTime(0);
   };
   const handleSendMessage = (): void => {
-    sendMessage(text);
+    if (!selectedChat?.otherUid) return;
+    sendMessage(text, selectedChat?.otherUid);
     setText("");
   };
 
@@ -119,6 +124,9 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
       e.target.value = "";
     }
   };
+  useEffect(() => {
+    console.log("selectedChatt", selectedChat);
+  }, [selectedChat]);
   return (
     <div>
       <MenuPopover
@@ -139,34 +147,41 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
       <CameraModal open={openCameraModal} setOpen={setOpenCameraModal} />
       <div className="flex flex-col h-screen">
         <div>
-          <ChatHeader />
+          <ChatHeader selectedChat={selectedChat} />
         </div>
         <div className="pr-10 pl-4 flex-1 overflow-y-auto py-3 messages_scrollbar">
-          <Messages messages={messages} messagesLoading={messagesLoading}/>
+          <Messages messages={messages} messagesLoading={messagesLoading} />
         </div>
-        <div className="bg-red-400">
-          {!isRecordingOn ? (
-            <InputSection
-              text={text}
-              setText={setText}
-              handleClick={handleClick}
-              handleSendMessage={handleSendMessage}
-              setIsRecordingOn={setIsRecordingOn}
-              startRecording={startRecording}
-            />
-          ) : (
-            <RecordingSection
-              stopRecording={stopRecording}
-              setIsRecordingOn={setIsRecordingOn}
-              resetTimer={resetTimer}
-              recordingTime={recordingTime}
-              isPaused={isPaused}
-              setIsPaused={setIsPaused}
-              handleSendFile={handleSendFile}
-              mediaBlobUrl={mediaBlobUrl}
-            />
-          )}
-        </div>
+        {!isBlocked ? (
+          <div className="bg-red-400">
+            {!isRecordingOn ? (
+              <InputSection
+                text={text}
+                setText={setText}
+                handleClick={handleClick}
+                handleSendMessage={handleSendMessage}
+                setIsRecordingOn={setIsRecordingOn}
+                startRecording={startRecording}
+              />
+            ) : (
+              <RecordingSection
+                stopRecording={stopRecording}
+                setIsRecordingOn={setIsRecordingOn}
+                resetTimer={resetTimer}
+                recordingTime={recordingTime}
+                isPaused={isPaused}
+                setIsPaused={setIsPaused}
+                handleSendFile={handleSendFile}
+                mediaBlobUrl={mediaBlobUrl}
+              />
+            )}
+          </div>
+        ) : (
+          <div className="center gap-1 p-3 border-t border-t-[#d1cece] text-sm shadow-[0px_0px_7px_#d1cece]">
+            <BlockOutlinedIcon sx={{ fontSize: "20px" }} />
+            <p className="font-[500]">You can't send messages to this user</p>
+          </div>
+        )}
       </div>
     </div>
   );

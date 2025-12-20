@@ -26,6 +26,7 @@ export const getOrCreateChat = async (
       name: otherUser?.displayName,
       participants: [currentUser?.uid as string, otherUser?.uid],
       otherUid: otherUser?.uid,
+      favourites: chatExists?.favourites,
     };
   } else {
     console.log("doesn't exist");

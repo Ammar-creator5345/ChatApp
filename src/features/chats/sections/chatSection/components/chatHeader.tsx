@@ -10,13 +10,44 @@ import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOut
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
+import useActiveUser from "../../../../../shared/hooks/useActiveUser";
+import { SelectedChatTypes } from "../../../types/chatTypes";
+import {
+  blockUser,
+  unBlockUser,
+} from "../../../../../shared/services/firebase/userService";
+import { useAuth } from "../../../../auth/context/authContext";
+import ConfirmationModal from "../../../components/layout/confirmationModal";
+import AlertMessage from "../../../../../shared/components/layout/alertMessage";
+import {
+  clearChat,
+  deleteChat,
+  toggleFavouriteChat,
+} from "../../../services/chatService";
 
 const menuItemStyle = "flex justify-center items-center gap-3 font-[400]";
 
-const ChatHeader = () => {
-  const context = useSelectedUserContext();
-  const userData = context?.selectedUserData;
-  const { setOpenDetailsDrawer } = useSelectedUserContext();
+type propsTypes = {
+  selectedChat: SelectedChatTypes | null;
+};
+
+const ChatHeader = ({ selectedChat }: propsTypes) => {
+  const {
+    selectedUserData: userData,
+    setSelectedChat,
+    setOpenDetailsDrawer,
+  } = useSelectedUserContext();
+  const { isBlocked } = useActiveUser(selectedChat?.otherUid!);
+  const { user } = useAuth();
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
+  const [modalAction, setModalAction] = useState<
+    "block" | "delete" | "clear" | null
+  >(null);
+  const [isFavourite, setIsFavourite] = useState<boolean>(false);
+  // const isFavourite = selectedChat && selectedChat?.favourites?.[user?.uid!];
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -27,11 +58,84 @@ const ChatHeader = () => {
   };
 
   useEffect(() => {
-    if (!userData) return;
-    console.log(userData);
-  }, [userData]);
+    if (!selectedChat?.favourites || !user?.uid) return;
+    const status = selectedChat.favourites[user.uid];
+    setIsFavourite(status);
+  }, [user, selectedChat]);
+
+  const handleClickContactInfo = () => {
+    setTimeout(() => {
+      setOpenDetailsDrawer(true);
+    }, 50);
+    handleClose();
+  };
+
+  const handleClickCloseChat = () => {
+    setSelectedChat(null);
+    handleClose();
+  };
+  const modalTextMap: Record<string, string> = {
+    block: `Are you sure you want to ${
+      isBlocked ? "unblock" : "block"
+    } this user?`,
+    delete: "Are you sure you want to delete this chat",
+    clear: "Are you sure you want to clear the chat",
+  };
+
+  const handleBlockUser = () => {
+    if (!user?.uid || !selectedChat?.otherUid) return;
+    if (isBlocked) {
+      unBlockUser(user?.uid, selectedChat?.otherUid);
+      setAlertMessage("user is unBlocked");
+    } else {
+      blockUser(user?.uid, selectedChat?.otherUid);
+      setAlertMessage("user is blocked");
+    }
+    setShowAlert(true);
+  };
+  const handleFavouriteChat = () => {
+    handleClose();
+    if (!selectedChat?.id || !user?.uid) return;
+    toggleFavouriteChat(selectedChat?.id, user?.uid, !isFavourite);
+    setAlertMessage(
+      !isFavourite ? "added to Favourites" : "Removed From Favourites"
+    );
+    setIsFavourite((prev) => !prev);
+    setShowAlert(true);
+  };
+  const handleDeleteChat = async () => {
+    if (!selectedChat?.id) return;
+    setSelectedChat(null);
+    await deleteChat(selectedChat?.id);
+    setAlertMessage("Successfully Deleted the Chat!");
+    setShowAlert(true);
+  };
+
+  const handleClearChat = async () => {
+    if (!selectedChat?.id) return;
+    await clearChat(selectedChat.id);
+    setAlertMessage("Successfully Cleared the Chat!");
+    setShowAlert(true);
+  };
+
   return (
     <>
+      <AlertMessage
+        text={alertMessage}
+        open={showAlert}
+        onclose={() => setShowAlert(false)}
+      />
+      <ConfirmationModal
+        text={modalAction ? modalTextMap[modalAction] : ""}
+        open={!!modalAction}
+        setOpen={() => setModalAction(null)}
+        onConfirm={() => {
+          if (modalAction === "block") handleBlockUser();
+          if (modalAction === "delete") handleDeleteChat();
+          if (modalAction === "clear") handleClearChat();
+          setModalAction(null);
+        }}
+      />
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}
@@ -49,14 +153,18 @@ const ChatHeader = () => {
             icon={<InfoOutlineTwoToneIcon />}
             isMenu={true}
             className={menuItemStyle}
+            handleClick={handleClickContactInfo}
           />
         </MenuItem>
         <MenuItem>
           <ButtonItem
-            text="Add to Favourites"
-            icon={<FavoriteBorderOutlinedIcon />}
+            text={isFavourite ? "Remove from Favourites" : "Add to Favourites"}
+            icon={
+              isFavourite ? <FavoriteIcon /> : <FavoriteBorderOutlinedIcon />
+            }
             isMenu={true}
             className={menuItemStyle}
+            handleClick={handleFavouriteChat}
           />
         </MenuItem>
 
@@ -66,16 +174,21 @@ const ChatHeader = () => {
             icon={<HighlightOffOutlinedIcon />}
             isMenu={true}
             className={menuItemStyle}
+            handleClick={handleClickCloseChat}
           />
         </MenuItem>
 
         <hr />
         <MenuItem>
           <ButtonItem
-            text="Block"
+            text={isBlocked ? "Unblock" : "Block"}
             icon={<BlockTwoToneIcon />}
             isMenu={true}
             className={menuItemStyle}
+            handleClick={() => {
+              setModalAction("block");
+              handleClose();
+            }}
           />
         </MenuItem>
 
@@ -85,6 +198,10 @@ const ChatHeader = () => {
             icon={<RemoveCircleOutlineOutlinedIcon />}
             isMenu={true}
             className={menuItemStyle}
+            handleClick={() => {
+              setModalAction("clear");
+              handleClose();
+            }}
           />
         </MenuItem>
         <MenuItem>
@@ -93,6 +210,10 @@ const ChatHeader = () => {
             icon={<DeleteOutlineOutlinedIcon />}
             isMenu={true}
             className={menuItemStyle}
+            handleClick={() => {
+              setModalAction("delete");
+              handleClose();
+            }}
           />
         </MenuItem>
       </Menu>

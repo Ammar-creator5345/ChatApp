@@ -1,4 +1,4 @@
-import { UserTypes } from "../../../types/chatTypes";
+import { UserTypes } from "../../../../types/chatTypes";
 
 type PropsTypes = {
   user: UserTypes;

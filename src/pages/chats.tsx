@@ -31,7 +31,7 @@ import useChats from "../features/chats/hooks/useChats";
 const Chats = () => {
   const { user } = useAuth();
   // const [loading, setLoading] = useState(false);
-  const { chatList, setChatList, loading } = useChats(user?.uid!);
+  const { chatList, loading } = useChats(user?.uid!);
   const [selectedChat, setSelectedChat] = useState<SelectedChatTypes | null>(
     null
   );
