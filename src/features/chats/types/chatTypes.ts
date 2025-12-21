@@ -40,6 +40,8 @@ export type selectedUserDataTypes = {
   uid: string;
   about: string;
   phoneNumber: string;
+  blockedUsers?: string[];
+  lastOnline: { seconds: number; nanoseconds: number };
 };
 
 export type DetailsDrawerTypes = {

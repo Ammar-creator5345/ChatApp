@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { useSelectedUserContext } from "../../../context/selectedUserContext";
 import MoreVertTwoToneIcon from "@mui/icons-material/MoreVertTwoTone";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import ButtonItem from "../../../components/buttonItem";
+import ButtonItem from "../../../../components/buttonItem";
 import InfoOutlineTwoToneIcon from "@mui/icons-material/InfoOutlineTwoTone";
 import BlockTwoToneIcon from "@mui/icons-material/BlockTwoTone";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
@@ -12,20 +11,23 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-import useActiveUser from "../../../../../shared/hooks/useActiveUser";
-import { SelectedChatTypes } from "../../../types/chatTypes";
+import useActiveUser from "../../../../../../shared/hooks/useActiveUser";
+import { SelectedChatTypes } from "../../../../types/chatTypes";
 import {
   blockUser,
   unBlockUser,
-} from "../../../../../shared/services/firebase/userService";
-import { useAuth } from "../../../../auth/context/authContext";
-import ConfirmationModal from "../../../components/layout/confirmationModal";
-import AlertMessage from "../../../../../shared/components/layout/alertMessage";
+} from "../../../../../../shared/services/firebase/userService";
+import ConfirmationModal from "../../../../components/layout/confirmationModal";
+import AlertMessage from "../../../../../../shared/components/layout/alertMessage";
 import {
   clearChat,
   deleteChat,
   toggleFavouriteChat,
-} from "../../../services/chatService";
+} from "../../../../services/chatService";
+import { TimeFormatter } from "../../../../../../utils/timeFormatter";
+import ChatHeaderSkeleton from "./chatheaderSkeleton";
+import { useSelectedUserContext } from "../../../../context/selectedUserContext";
+import { useAuth } from "../../../../../auth/context/authContext";
 
 const menuItemStyle = "flex justify-center items-center gap-3 font-[400]";
 
@@ -47,7 +49,6 @@ const ChatHeader = ({ selectedChat }: propsTypes) => {
     "block" | "delete" | "clear" | null
   >(null);
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
-  // const isFavourite = selectedChat && selectedChat?.favourites?.[user?.uid!];
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -217,32 +218,40 @@ const ChatHeader = ({ selectedChat }: propsTypes) => {
           />
         </MenuItem>
       </Menu>
-      <div className="bg-white cursor-pointer border-b border-b-black flex items-center justify-between p-2 pr-5">
-        <div
-          onClick={() => setOpenDetailsDrawer(true)}
-          className="flex items-center gap-3 flex-1"
-        >
-          <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">
-            <img
-              src={userData?.photoUrl}
-              alt="profile picture"
-              className="w-full h-full object-cover"
-            />
+
+      {userData ? (
+        <div className="bg-white cursor-pointer border-b border-b-black flex items-center justify-between p-2 pr-5">
+          <div
+            onClick={() => setOpenDetailsDrawer(true)}
+            className="flex items-center gap-3 flex-1"
+          >
+            <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center">
+              <img
+                src={userData?.photoUrl}
+                alt="profile picture"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="text-lg font-bold">{userData?.displayName}</p>
+              <p className="text-sm">
+                {userData?.isOnline
+                  ? userData.isOnline
+                  : "Last online: " +
+                    TimeFormatter(userData?.lastOnline.seconds as number)}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-lg font-bold">{userData?.displayName}</p>
-            <p className="text-sm">
-              {userData?.isOnline ? "Online" : "Offline"}
-            </p>
-          </div>
+          <button
+            onClick={handleClick}
+            className="p-1 rounded-lg transition-all center hover:bg-[#f0eeee]"
+          >
+            <MoreVertTwoToneIcon />
+          </button>
         </div>
-        <button
-          onClick={handleClick}
-          className="p-1 rounded-lg transition-all center hover:bg-[#f0eeee]"
-        >
-          <MoreVertTwoToneIcon />
-        </button>
-      </div>
+      ) : (
+        <ChatHeaderSkeleton />
+      )}
     </>
   );
 };

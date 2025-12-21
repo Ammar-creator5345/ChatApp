@@ -1,6 +1,6 @@
 import Popover from "@mui/material/Popover";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import FileDrawer from "./fileDrawer";
+import FileDrawer from "./layout/fileDrawer";
 
 type PropTypes = {
   open: boolean;

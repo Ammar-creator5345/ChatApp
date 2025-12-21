@@ -27,6 +27,7 @@ import DetailsDrawer, {
 } from "../features/chats/sections/chatDrawer/detailsDrawer";
 import UseChats from "../features/chats/hooks/useChats";
 import useChats from "../features/chats/hooks/useChats";
+import useSelectedUser from "../features/chats/hooks/useSelectedUser";
 
 const Chats = () => {
   const { user } = useAuth();
@@ -35,50 +36,37 @@ const Chats = () => {
   const [selectedChat, setSelectedChat] = useState<SelectedChatTypes | null>(
     null
   );
-  const [selectedUserData, setSelectedUserData] =
-    useState<selectedUserDataTypes | null>(null);
+  // const [selectedUserData, setSelectedUserData] =
+  //   useState<selectedUserDataTypes | null>(null);
+  const { selectedUserData } = useSelectedUser(selectedChat?.otherUid!);
   const [openDetailsDrawer, setOpenDetailsDrawer] = useState<boolean>(false);
   const navigate = useNavigate();
-  // const handleSignOut = () => {
-  //   updateDoc(doc(db, "users", user?.uid as string), { isOnline: false });
-  //   setLoading(true);
-  //   signOut(auth)
-  //     .then(() => {
-  //       console.log("log out successfull");
-  //       navigate("/login");
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // };
 
-  useEffect(() => {
-    const getOtherUserDetails = async () => {
-      if (!selectedChat?.otherUid) return;
-      console.log("selected chat: ", selectedChat);
-      const docRef = doc(db, "users", selectedChat?.otherUid as string);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
-        const data = docSnap.data();
-        setSelectedUserData({
-          displayName: data?.displayName,
-          email: data?.email,
-          isOnline: data?.isOnline,
-          photoUrl: data?.photoUrl,
-          uid: data?.uid,
-          about: data?.about,
-          phoneNumber: data?.phoneNumber,
-        });
-      } else {
-        console.log("No such document!");
-      }
-    };
-    getOtherUserDetails();
-  }, [selectedChat]);
+  // useEffect(() => {
+  //   const getOtherUserDetails = async () => {
+  //     if (!selectedChat?.otherUid) return;
+  //     console.log("selected chat: ", selectedChat);
+  //     const docRef = doc(db, "users", selectedChat?.otherUid as string);
+  //     const docSnap = await getDoc(docRef);
+  //     if (docSnap.exists()) {
+  //       console.log("Document data:", docSnap.data());
+  //       const data = docSnap.data();
+  //       setSelectedUserData({
+  //         displayName: data?.displayName,
+  //         email: data?.email,
+  //         isOnline: data?.isOnline,
+  //         photoUrl: data?.photoUrl,
+  //         uid: data?.uid,
+  //         about: data?.about,
+  //         phoneNumber: data?.phoneNumber,
+  //         lastOnline: data?.lastOnline,
+  //       });
+  //     } else {
+  //       console.log("No such document!");
+  //     }
+  //   };
+  //   getOtherUserDetails();
+  // }, [selectedChat]);
 
   return (
     <>

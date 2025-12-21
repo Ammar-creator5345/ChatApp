@@ -21,4 +21,5 @@ export type AlertMessageProps = {
   open: boolean;
   duration?: number;
   onclose?: () => void;
+  error?: boolean;
 };

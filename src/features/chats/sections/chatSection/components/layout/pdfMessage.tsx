@@ -1,7 +1,7 @@
-import { messageType } from "../../../types/chatTypes";
-import { useAuth } from "../../../../auth/context/authContext";
-import { TimeFormatter } from "../../../../../utils/timeFormatter";
-import { renderStatusIcon } from "../../../utils/renderStatusIcon";
+import { messageType } from "../../../../types/chatTypes";
+import { useAuth } from "../../../../../auth/context/authContext";
+import { TimeFormatter } from "../../../../../../utils/timeFormatter";
+import { renderStatusIcon } from "../../../../utils/renderStatusIcon";
 
 type PropsTypes = {
   message: messageType;

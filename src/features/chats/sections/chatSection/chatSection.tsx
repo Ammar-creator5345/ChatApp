@@ -1,16 +1,17 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import CameraModal from "./components/cameraModal";
-import MenuPopover from "./components/menuPopover";
+import CameraModal from "./components/layout/cameraModal";
+import MenuPopover from "./components/layout/menuPopover";
 import { useReactMediaRecorder } from "react-media-recorder";
 import useMessages from "../../hooks/useMessages";
 import { messageType, SelectedChatTypes } from "../../types/chatTypes";
-import RecordingSection from "./components/recordingSection";
-import InputSection from "./components/inputSection";
-import Messages from "./components/messages";
-import FileDrawer from "./components/fileDrawer";
-import ChatHeader from "./components/chatHeader";
+import RecordingSection from "./components/layout/recordingSection";
+import InputSection from "./components/layout/inputSection";
+import Messages from "./components/layout/messages";
+import FileDrawer from "./components/layout/fileDrawer";
+import ChatHeader from "./components/layout/chatHeader";
 import useActiveUser from "../../../../shared/hooks/useActiveUser";
 import BlockOutlinedIcon from "@mui/icons-material/BlockOutlined";
+import AlertMessage from "../../../../shared/components/layout/alertMessage";
 
 type PropTypes = {
   selectedChat: SelectedChatTypes | null;
@@ -47,6 +48,8 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
   const [image, setImage] = useState<string>("");
   const [file, setFile] = useState<Record<string, any>>({});
   const { activeUser, isBlocked } = useActiveUser(selectedChat?.otherUid!);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertMessage, setAlertMessage] = useState<string>("");
   const handleCloseDrawer = (): void => {
     setOpenDrawer(false);
     setImage("");
@@ -71,10 +74,14 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     stopTimer();
     setRecordingTime(0);
   };
-  const handleSendMessage = (): void => {
+  const handleSendMessage = async (): Promise<void> => {
     if (!selectedChat?.otherUid) return;
-    sendMessage(text, selectedChat?.otherUid);
     setText("");
+    const res = await sendMessage(text, selectedChat?.otherUid);
+    if (res?.success === false) {
+      setShowAlert(true);
+      setAlertMessage("You can't send message to this user");
+    }
   };
 
   const handleSendFile = async (fileType: string, file: any) => {
@@ -129,6 +136,12 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
   }, [selectedChat]);
   return (
     <div>
+      <AlertMessage
+        text={alertMessage}
+        open={showAlert}
+        error={true}
+        onclose={() => setShowAlert(false)}
+      />
       <MenuPopover
         open={open}
         anchorEl={anchorEl}

@@ -16,6 +16,12 @@ import ButtonItem from "../../components/buttonItem";
 import { deleteChat, toggleFavouriteChat } from "../../services/chatService";
 import AlertMessage from "../../../../shared/components/layout/alertMessage";
 import { useAuth } from "../../../auth/context/authContext";
+import {
+  blockUser,
+  unBlockUser,
+} from "../../../../shared/services/firebase/userService";
+import useActiveUser from "../../../../shared/hooks/useActiveUser";
+import ConfirmationModal from "../../components/layout/confirmationModal";
 
 export const drawerWidth = 400;
 
@@ -27,13 +33,24 @@ const DetailsDrawer = ({
 }: DetailsDrawerTypes) => {
   const { openDetailsDrawer: open, setOpenDetailsDrawer: setOpen } =
     useSelectedUserContext();
+  const { isBlocked } = useActiveUser(selectedChat?.otherUid!);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [modalAction, setModalAction] = useState<"delete" | "block" | null>(
+    null
+  );
   const [alertMessage, setAlertMessage] = useState<string>("");
   const { user } = useAuth();
   const selected_chat = chatList?.find((chat) => chat?.id === selectedChat?.id);
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
   console.log("selected_chat", selected_chat);
+  const modalTextMap: Record<string, string> = {
+    block: `Are you sure you want to ${
+      isBlocked ? "unblock" : "block"
+    } this user?`,
+    delete: "Are you sure you want to delete this chat?",
+    clear: "Are you sure you want to clear this chat?",
+  };
   useEffect(() => {
     if (!selected_chat || !user?.uid) return;
     const status = selected_chat.favourites?.[user.uid] ?? false;
@@ -55,10 +72,37 @@ const DetailsDrawer = ({
   const handleFavouriteChat = () => {
     if (!selectedChat?.id || !user?.uid) return;
     toggleFavouriteChat(selectedChat?.id, user?.uid, !isFavourite);
+    setAlertMessage(
+      !isFavourite ? "added to Favourites" : "Removed From Favourites"
+    );
     setIsFavourite((prev) => !prev);
+    setShowAlert(true);
   };
+
+  const handleBlockUser = () => {
+    if (!user?.uid || !selectedChat?.otherUid) return;
+    if (isBlocked) {
+      unBlockUser(user?.uid, selectedChat?.otherUid);
+      setAlertMessage("user is unBlocked");
+    } else {
+      blockUser(user?.uid, selectedChat?.otherUid);
+      setAlertMessage("user is blocked");
+    }
+    setShowAlert(true);
+  };
+
   return (
     <>
+      <ConfirmationModal
+        text={modalAction ? modalTextMap[modalAction] : ""}
+        open={!!modalAction}
+        setOpen={() => setModalAction(null)}
+        onConfirm={() => {
+          if (modalAction === "delete") handleDeleteChat();
+          if (modalAction === "block") handleBlockUser();
+          setModalAction(null);
+        }}
+      />
       <AlertMessage
         text={alertMessage}
         open={showAlert}
@@ -116,18 +160,23 @@ const DetailsDrawer = ({
             <hr className="my-3" />
             <ButtonItem text="Starred Messages" icon={<StarOutlineIcon />} />
             <ButtonItem
-              text={`Blocked ${selectedUserData?.displayName}`}
+              text={`${isBlocked ? "Unblock" : "Blocked"} ${
+                selectedUserData?.displayName
+              }`}
               icon={<BlockIcon />}
+              handleClick={() => setModalAction("block")}
             />
             <ButtonItem
-              text="Add to Favourites"
+              text={
+                isFavourite ? "Remove from Favourites" : "Add to Favourites"
+              }
               icon={isFavourite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
               handleClick={handleFavouriteChat}
             />
             <ButtonItem
               text="Delete chat"
               icon={<DeleteIcon />}
-              handleClick={handleDeleteChat}
+              handleClick={() => setModalAction("delete")}
               status={deleting}
             />
           </div>

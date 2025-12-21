@@ -2,14 +2,14 @@ import WavesurferPlayer from "@wavesurfer/react";
 import PauseIcon from "@mui/icons-material/Pause";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { useState } from "react";
-import { messageType } from "../../../types/chatTypes";
-import { TimeFormatter } from "../../../../../utils/timeFormatter";
-import { renderStatusIcon } from "../../../utils/renderStatusIcon";
-import { useAuth } from "../../../../auth/context/authContext";
+import { messageType } from "../../../../types/chatTypes";
+import { TimeFormatter } from "../../../../../../utils/timeFormatter";
+import { renderStatusIcon } from "../../../../utils/renderStatusIcon";
+import { useAuth } from "../../../../../auth/context/authContext";
 import {
   showCurrentRecordingTime,
   ShowRecordingTime,
-} from "../../../utils/showRecordingTime";
+} from "../../../../utils/showRecordingTime";
 
 type PropsTypes = {
   message: messageType;

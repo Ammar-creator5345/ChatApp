@@ -36,6 +36,8 @@ export const getOrCreateChat = async (
       lastMessageTime: new Date(),
       participants: [currentUser?.uid as string, otherUser?.uid],
       participantsNames: [currentUser?.displayName, otherUser.displayName],
+      favourites: {},
+      unreadCount: {},
     });
     return {
       id: newChat?.id,

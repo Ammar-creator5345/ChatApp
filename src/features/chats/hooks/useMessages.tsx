@@ -2,6 +2,7 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   increment,
   onSnapshot,
   orderBy,
@@ -14,10 +15,12 @@ import { db } from "../../../config/firebase/InitializeFireBase";
 import { useAuth } from "../../auth/context/authContext";
 import { uploadFile } from "../../../shared/services/cloudinary/uploadData";
 import { uploadFileToSupabase } from "../../../shared/services/supabase/uploadFile";
+import useActiveUser from "../../../shared/hooks/useActiveUser";
 const useMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<null | messageType[]>(null);
   const { user } = useAuth();
   const [messagesLoading, setMessagesLoading] = useState<boolean>(false);
+  const { activeUser } = useActiveUser("otherId");
 
   useEffect(() => {
     if (!chatId) return;
@@ -52,10 +55,22 @@ const useMessages = (chatId: string | undefined) => {
   const sendMessage = async (text: string, otherUid: string) => {
     try {
       if (!text.trim() || !chatId) return;
+
       setMessagesLoading(true);
       const sendingText = text;
       const id = chatId;
       const collectionData = collection(db, "chats", id, "messages");
+      const senderBlockedReceiver =
+        activeUser?.blockedUsers?.includes(otherUid);
+      const receiverSnap = await getDoc(doc(db, "users", otherUid));
+      if (!receiverSnap.exists()) return;
+      const receiverBlockedSender = receiverSnap
+        .data()
+        .blockedUsers?.includes(user?.uid);
+      if (senderBlockedReceiver || receiverBlockedSender) {
+        console.log("You are blocked");
+        return { success: false };
+      }
       const res = await addDoc(collectionData, {
         senderId: user?.uid,
         text: sendingText,

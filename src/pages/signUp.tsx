@@ -60,6 +60,10 @@ const SignUp = () => {
           displayName: values.name,
           email: values.email,
           photoURL: user.photoURL || "",
+          phoneNumber: "",
+          about: "",
+          blockedUsers: [],
+          isOnline: true,
         });
       })
       .catch((error) => {

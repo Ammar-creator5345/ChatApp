@@ -46,7 +46,6 @@ const Login = () => {
       .then((userCredential) => {
         const user = userCredential.user;
         updateDoc(doc(db, "users", user.uid), { isOnline: true });
-        // console.log(userCredential);
         console.log(user);
       })
       .catch((err) => {

@@ -7,6 +7,7 @@ const AlertMessage = ({
   open,
   duration = 3000,
   onclose,
+  error = false,
 }: AlertMessageProps) => {
   useEffect(() => {
     if (!open) return;
@@ -18,7 +19,7 @@ const AlertMessage = ({
   return (
     <Collapse in={open}>
       <Alert
-        severity="success"
+        severity={error ? "error" : "success"}
         sx={{
           position: "fixed",
           right: 0,
