@@ -1,81 +1,38 @@
-import { signOut } from "firebase/auth";
-import { auth, db } from "../config/firebase/InitializeFireBase";
-import { useEffect, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate } from "react-router-dom";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  onSnapshot,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { useState } from "react";
 import ChatList from "../features/chats/sections/chatList/chatList";
 import ChatSection from "../features/chats/sections/chatSection/chatSection";
 import { useAuth } from "../features/auth/context/authContext";
-import {
-  ChatListTypes,
-  SelectedChatTypes,
-  selectedUserDataTypes,
-} from "../features/chats/types/chatTypes";
-import { SelectedUserContext } from "../features/chats/context/selectedUserContext";
+import { messageType, SelectedChatTypes } from "../features/chats/types/chatTypes";
+import { ChatContext } from "../features/chats/context/selectedUserContext";
 import DetailsDrawer, {
   drawerWidth,
 } from "../features/chats/sections/chatDrawer/detailsDrawer";
-import UseChats from "../features/chats/hooks/useChats";
 import useChats from "../features/chats/hooks/useChats";
 import useSelectedUser from "../features/chats/hooks/useSelectedUser";
 
+
+
 const Chats = () => {
   const { user } = useAuth();
-  // const [loading, setLoading] = useState(false);
   const { chatList, loading } = useChats(user?.uid!);
   const [selectedChat, setSelectedChat] = useState<SelectedChatTypes | null>(
     null
   );
-  // const [selectedUserData, setSelectedUserData] =
-  //   useState<selectedUserDataTypes | null>(null);
   const { selectedUserData } = useSelectedUser(selectedChat?.otherUid!);
   const [openDetailsDrawer, setOpenDetailsDrawer] = useState<boolean>(false);
-  const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const getOtherUserDetails = async () => {
-  //     if (!selectedChat?.otherUid) return;
-  //     console.log("selected chat: ", selectedChat);
-  //     const docRef = doc(db, "users", selectedChat?.otherUid as string);
-  //     const docSnap = await getDoc(docRef);
-  //     if (docSnap.exists()) {
-  //       console.log("Document data:", docSnap.data());
-  //       const data = docSnap.data();
-  //       setSelectedUserData({
-  //         displayName: data?.displayName,
-  //         email: data?.email,
-  //         isOnline: data?.isOnline,
-  //         photoUrl: data?.photoUrl,
-  //         uid: data?.uid,
-  //         about: data?.about,
-  //         phoneNumber: data?.phoneNumber,
-  //         lastOnline: data?.lastOnline,
-  //       });
-  //     } else {
-  //       console.log("No such document!");
-  //     }
-  //   };
-  //   getOtherUserDetails();
-  // }, [selectedChat]);
+  const [replyMessage, setReplyMessage] = useState<messageType | null>(null)
 
   return (
     <>
-      <SelectedUserContext.Provider
+      <ChatContext.Provider
         value={{
           selectedUserData,
           openDetailsDrawer,
           setOpenDetailsDrawer,
           setSelectedChat,
+          selectedChat,
+          replyMessage,
+          setReplyMessage
         }}
       >
         <DetailsDrawer
@@ -110,7 +67,7 @@ const Chats = () => {
             </div>
           </div>
         </div>
-      </SelectedUserContext.Provider>
+      </ChatContext.Provider>
     </>
   );
 };

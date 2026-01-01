@@ -166,7 +166,7 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
           <Messages messages={messages} messagesLoading={messagesLoading} />
         </div>
         {!isBlocked ? (
-          <div className="bg-red-400">
+          <div className="rounded-full mx-3 mb-3">
             {!isRecordingOn ? (
               <InputSection
                 text={text}

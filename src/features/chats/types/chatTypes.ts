@@ -9,6 +9,8 @@ export type messageType = {
   fileUrl: string;
   timestamp: { seconds: number; nanoseconds: number };
   fileName: string;
+  deletedForMe?: string[];
+  deletedForAll?: true;
 };
 
 export type ChatListTypes = {

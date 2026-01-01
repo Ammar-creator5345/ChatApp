@@ -15,7 +15,7 @@ import {
 } from "../../../../services/chatService";
 import AlertMessage from "../../../../../../shared/components/layout/alertMessage";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import { useSelectedUserContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/selectedUserContext";
 import ConfirmationModal from "../../../../components/layout/confirmationModal";
 import {
   blockUser,
@@ -42,15 +42,14 @@ const PopOver = ({
   const { user } = useAuth();
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
-  const { setSelectedChat } = useSelectedUserContext();
+  const { setSelectedChat } = useChatContext();
   const [modalAction, setModalAction] = useState<
     "block" | "delete" | "clear" | null
   >(null);
   const { isBlocked } = useActiveUser(chat?.otherUid!);
   const modalTextMap: Record<string, string> = {
-    block: `Are you sure you want to ${
-      isBlocked ? "unblock" : "block"
-    } this user?`,
+    block: `Are you sure you want to ${isBlocked ? "unblock" : "block"
+      } this user?`,
     delete: "Are you sure you want to delete this chat?",
     clear: "Are you sure you want to clear this chat?",
   };

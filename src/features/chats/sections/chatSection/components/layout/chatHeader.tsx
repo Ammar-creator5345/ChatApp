@@ -26,7 +26,7 @@ import {
 } from "../../../../services/chatService";
 import { TimeFormatter } from "../../../../../../utils/timeFormatter";
 import ChatHeaderSkeleton from "./chatheaderSkeleton";
-import { useSelectedUserContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/selectedUserContext";
 import { useAuth } from "../../../../../auth/context/authContext";
 
 const menuItemStyle = "flex justify-center items-center gap-3 font-[400]";
@@ -40,7 +40,7 @@ const ChatHeader = ({ selectedChat }: propsTypes) => {
     selectedUserData: userData,
     setSelectedChat,
     setOpenDetailsDrawer,
-  } = useSelectedUserContext();
+  } = useChatContext();
   const { isBlocked } = useActiveUser(selectedChat?.otherUid!);
   const { user } = useAuth();
   const [showAlert, setShowAlert] = useState<boolean>(false);

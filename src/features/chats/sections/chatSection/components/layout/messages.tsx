@@ -7,7 +7,7 @@ import PdfMessage from "./pdfMessage";
 import VideoMessage from "./videoMessage";
 import ImageMessage from "./imageMessage";
 import TextMessage from "./textMessage";
-import { useSelectedUserContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/selectedUserContext";
 import OptionsMenu from "./optionsMenu";
 
 type PropsTypes = {
@@ -17,9 +17,12 @@ type PropsTypes = {
 
 const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
   const { user } = useAuth();
-  const { setOpenDetailsDrawer } = useSelectedUserContext();
-  const [selectedMessage, setSelectedMessage] = useState<any>(null);
-  const userData = useSelectedUserContext()?.selectedUserData;
+  const { setOpenDetailsDrawer } = useChatContext();
+  const [selectedMessage, setSelectedMessage] = useState<messageType | null>(
+    null
+  );
+  // const [replyMessage, setReplyMessage] = useState<messageType | null>(null)
+  const userData = useChatContext()?.selectedUserData;
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const openMenu = Boolean(anchorEl);
   const MenuId = openMenu ? "simple-popover" : undefined;
@@ -46,6 +49,10 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
         id={MenuId}
         anchorEl={anchorEl}
         handleClose={handleCloseMenu}
+        selectedMessage={selectedMessage}
+      // replyMessage={replyMessage}
+      // setReplyMessage={setReplyMessage}
+
       />
       <div>
         {Object.keys(groupedMessages).map((date, index) => (
@@ -56,11 +63,10 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
             {groupedMessages[date]?.map((message: messageType) => (
               <div
                 key={message.id}
-                className={` mt-[6px] flex items-start gap-2 ${
-                  user?.uid === message.senderId
-                    ? "justify-end"
-                    : "justify-start"
-                }`}
+                className={` mt-[6px] flex items-start gap-2 ${user?.uid === message.senderId
+                  ? "justify-end"
+                  : "justify-start"
+                  }`}
               >
                 {user?.uid !== message.senderId && (
                   <div
@@ -74,7 +80,13 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
                     />
                   </div>
                 )}
-                {message.type === "text" && <TextMessage message={message} handleClick={handleClickMenu}/>}
+                {message.type === "text" && (
+                  <TextMessage
+                    message={message}
+                    handleClick={handleClickMenu}
+                    setSelectedMessage={setSelectedMessage}
+                  />
+                )}
                 {message.type === "image/png" && (
                   <ImageMessage message={message} />
                 )}

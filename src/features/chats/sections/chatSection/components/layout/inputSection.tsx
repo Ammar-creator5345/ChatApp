@@ -4,6 +4,11 @@ import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import MicNoneOutlinedIcon from "@mui/icons-material/MicNoneOutlined";
 import EmojiPicker from "emoji-picker-react";
+import AddIcon from '@mui/icons-material/Add';
+import { AiOutlineSend } from "react-icons/ai";
+import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+
+import { BsFillSendFill } from "react-icons/bs";
 import {
   ChangeEvent,
   Dispatch,
@@ -12,6 +17,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { useChatContext } from "../../../../context/selectedUserContext";
+import { useAuth } from "../../../../../auth/context/authContext";
 
 type PropsTypes = {
   text: string;
@@ -32,6 +39,9 @@ const InputSection = ({
 }: PropsTypes) => {
   const emojiDivRef = useRef<HTMLDivElement | null>(null);
   const [openEmojiPicker, setOpenEmojiPicker] = useState<boolean>(false);
+  const { replyMessage, setReplyMessage } = useChatContext()
+  const { user } = useAuth()
+  const isSender = replyMessage?.senderId === user?.uid
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (
@@ -48,67 +58,87 @@ const InputSection = ({
   }, []);
 
   return (
-    <div className="bg-red-300 relative flex items-center gap-1">
-      <div className="flex items-center gap-1">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpenEmojiPicker((prev) => !prev);
-          }}
-          className="p-2 rounded-md hover:bg-red-400"
-        >
-          <SentimentSatisfiedAltIcon />
-        </button>
-        <button
-          onClick={handleClick}
-          className="p-2 rounded-md hover:bg-red-400"
-        >
-          <AttachFileOutlinedIcon className="rotate-[220deg]" />
-        </button>
-      </div>
-      <TextareaAutosize
-        aria-label="empty textarea"
-        placeholder="Type a message"
-        className="w-full p-3 outline-none resize-none no-scrollbar"
-        maxRows={4}
-        value={text}
-        onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-          setText(e.target.value)
-        }
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            handleSendMessage();
+    <>
+      {replyMessage && <div className="px-2">
+        <div className="p-1 px-3 rounded-md border-l-[4px] bg-[#cecaca] border-l-green-500">
+          <div>
+            <div className="w-full flex items-center justify-between">
+              <p className="text-sm font-semibold text-[#389238]">{isSender ? "You" : "Other"}</p>
+              <button
+                onClick={() => setReplyMessage(null)}
+                type="button"
+                className="w-6 h-6 center">
+                <CloseSharpIcon sx={{ fontSize: "20px" }} />
+              </button>
+            </div>
+            <p className="text-sm text-[#3a3939]">{replyMessage?.text}</p>
+          </div>
+        </div>
+      </div>}
+      <div className="bg-white relative flex items-center px-2 py-[2px] gap-1 rounded-3xl shadow-md">
+        <div className="flex items-center gap-[2px]">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setOpenEmojiPicker((prev) => !prev);
+            }}
+            className="p-2 transition-all center rounded-full hover:bg-[#dfdede]"
+          >
+            <SentimentSatisfiedAltIcon />
+          </button>
+          <button
+            onClick={handleClick}
+            className="p-2 transition-all center rounded-full hover:bg-[#dfdede]"
+          >
+            <AttachFileOutlinedIcon className="rotate-[220deg]" />
+          </button>
+        </div>
+        <TextareaAutosize
+          aria-label="empty textarea"
+          placeholder="Type a message"
+          className="w-full p-3 pl-2 outline-none resize-none no-scrollbar"
+          maxRows={4}
+          value={text}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+            setText(e.target.value)
           }
-        }}
-      />
-
-      {text ? (
-        <button
-          onClick={handleSendMessage}
-          className="p-2 rounded-md hover:bg-red-400"
-        >
-          <SendIcon />
-        </button>
-      ) : (
-        <button
-          onClick={() => {
-            setIsRecordingOn(true);
-            startRecording();
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSendMessage();
+            }
           }}
-          className="p-2 rounded-md hover:bg-red-400"
-        >
-          <MicNoneOutlinedIcon />
-        </button>
-      )}
-      <div ref={emojiDivRef} className="absolute bottom-full mb-1">
-        <EmojiPicker
-          onEmojiClick={(obj) => setText((prev) => prev + obj.emoji)}
-          open={openEmojiPicker}
-          width={400}
         />
+
+        {text ? (
+          <button
+            onClick={handleSendMessage}
+            className="p-2 center rounded-full bg-[#4dc24d] transition-all hover:scale-[1.1]"
+          >
+            {/* <SendIcon /> */}
+            <AiOutlineSend size={20} />
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              setIsRecordingOn(true);
+              startRecording();
+            }}
+            className="p-2 center rounded-full hover:bg-[#4dc24d]"
+          >
+            <MicNoneOutlinedIcon />
+          </button>
+        )}
+        <div ref={emojiDivRef} className="absolute bottom-full mb-1">
+          <EmojiPicker
+            onEmojiClick={(obj) => setText((prev) => prev + obj.emoji)}
+            open={openEmojiPicker}
+            width={400}
+          />
+        </div>
       </div>
-    </div>
+    </>
+
   );
 };
 

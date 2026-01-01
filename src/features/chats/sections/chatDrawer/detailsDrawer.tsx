@@ -5,7 +5,7 @@ import {
   selectedUserDataTypes,
 } from "../../types/chatTypes";
 import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
-import { useSelectedUserContext } from "../../context/selectedUserContext";
+import { useChatContext } from "../../context/selectedUserContext";
 import EditIcon from "@mui/icons-material/Edit";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -32,7 +32,7 @@ const DetailsDrawer = ({
   chatList: chatList,
 }: DetailsDrawerTypes) => {
   const { openDetailsDrawer: open, setOpenDetailsDrawer: setOpen } =
-    useSelectedUserContext();
+    useChatContext();
   const { isBlocked } = useActiveUser(selectedChat?.otherUid!);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -45,9 +45,8 @@ const DetailsDrawer = ({
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
   console.log("selected_chat", selected_chat);
   const modalTextMap: Record<string, string> = {
-    block: `Are you sure you want to ${
-      isBlocked ? "unblock" : "block"
-    } this user?`,
+    block: `Are you sure you want to ${isBlocked ? "unblock" : "block"
+      } this user?`,
     delete: "Are you sure you want to delete this chat?",
     clear: "Are you sure you want to clear this chat?",
   };
@@ -133,8 +132,8 @@ const DetailsDrawer = ({
             >
               <CloseIcon />
             </button>
-            <h1 className="text-lg font-bold">Contact Info</h1>
-            <button className="p-1 rounded-lg center hover:bg-[#ecebeb]">
+            <h1 className="text-lg font-bold pr-4">Contact Info</h1>
+            <button className="p-1 opacity-0 cursor-default rounded-lg center">
               <EditIcon />
             </button>
           </div>
@@ -160,9 +159,8 @@ const DetailsDrawer = ({
             <hr className="my-3" />
             <ButtonItem text="Starred Messages" icon={<StarOutlineIcon />} />
             <ButtonItem
-              text={`${isBlocked ? "Unblock" : "Blocked"} ${
-                selectedUserData?.displayName
-              }`}
+              text={`${isBlocked ? "Unblock" : "Blocked"} ${selectedUserData?.displayName
+                }`}
               icon={<BlockIcon />}
               handleClick={() => setModalAction("block")}
             />

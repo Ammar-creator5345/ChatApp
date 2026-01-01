@@ -23,7 +23,7 @@ const useMessages = (chatId: string | undefined) => {
   const { activeUser } = useActiveUser("otherId");
 
   useEffect(() => {
-    if (!chatId) return;
+    if (!chatId || !user?.uid) return;
     const q = query(
       collection(db, "chats", chatId, "messages"),
       orderBy("timestamp", "asc")
@@ -33,7 +33,8 @@ const useMessages = (chatId: string | undefined) => {
         id: chat.id,
         ...chat.data(),
       })) as messageType[];
-      setMessages(chats);
+      const visibleMessages = chats?.filter((msg) => !msg.deletedForMe?.includes(user?.uid))
+      setMessages(visibleMessages);
       console.log(chats);
       updateDoc(doc(db, "chats", chatId), {
         [`unreadCount.${user?.uid}`]: 0,
@@ -77,6 +78,8 @@ const useMessages = (chatId: string | undefined) => {
         timestamp: new Date(),
         type: "text",
         status: "sent",
+        deletedForMe: [],
+        deletedForAll: false,
       });
       const reference = await doc(db, "chats", id);
       await updateDoc(reference, {
