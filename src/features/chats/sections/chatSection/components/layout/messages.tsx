@@ -7,7 +7,7 @@ import PdfMessage from "./pdfMessage";
 import VideoMessage from "./videoMessage";
 import ImageMessage from "./imageMessage";
 import TextMessage from "./textMessage";
-import { useChatContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/chatContext";
 import OptionsMenu from "./optionsMenu";
 
 type PropsTypes = {
@@ -52,7 +52,6 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
         selectedMessage={selectedMessage}
       // replyMessage={replyMessage}
       // setReplyMessage={setReplyMessage}
-
       />
       <div>
         {Object.keys(groupedMessages).map((date, index) => (

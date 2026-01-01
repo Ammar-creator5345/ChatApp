@@ -5,7 +5,7 @@ import {
   selectedUserDataTypes,
 } from "../../types/chatTypes";
 import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
-import { useChatContext } from "../../context/selectedUserContext";
+import { useChatContext } from "../../context/chatContext";
 import EditIcon from "@mui/icons-material/Edit";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";

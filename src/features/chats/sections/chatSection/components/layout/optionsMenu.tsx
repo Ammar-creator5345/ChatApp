@@ -6,7 +6,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Dispatch, SetStateAction, useState } from "react";
 import { messageType } from "../../../../types/chatTypes";
-import { useChatContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/chatContext";
 import DeleteConfirmationModal from "./deleteConfirmationModal";
 import { deleteForAll, deleteForMe } from "../../../../services/messageService";
 import { useAuth } from "../../../../../auth/context/authContext";

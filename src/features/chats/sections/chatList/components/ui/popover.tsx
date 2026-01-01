@@ -15,7 +15,7 @@ import {
 } from "../../../../services/chatService";
 import AlertMessage from "../../../../../../shared/components/layout/alertMessage";
 import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
-import { useChatContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/chatContext";
 import ConfirmationModal from "../../../../components/layout/confirmationModal";
 import {
   blockUser,

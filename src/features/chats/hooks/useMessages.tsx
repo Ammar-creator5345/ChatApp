@@ -16,11 +16,14 @@ import { useAuth } from "../../auth/context/authContext";
 import { uploadFile } from "../../../shared/services/cloudinary/uploadData";
 import { uploadFileToSupabase } from "../../../shared/services/supabase/uploadFile";
 import useActiveUser from "../../../shared/hooks/useActiveUser";
+import { useChatContext } from "../context/chatContext";
 const useMessages = (chatId: string | undefined) => {
   const [messages, setMessages] = useState<null | messageType[]>(null);
   const { user } = useAuth();
   const [messagesLoading, setMessagesLoading] = useState<boolean>(false);
   const { activeUser } = useActiveUser("otherId");
+  const { replyMessage, setReplyMessage } = useChatContext()
+
 
   useEffect(() => {
     if (!chatId || !user?.uid) return;
@@ -80,7 +83,15 @@ const useMessages = (chatId: string | undefined) => {
         status: "sent",
         deletedForMe: [],
         deletedForAll: false,
+        replyTo: replyMessage ? {
+          messageId: replyMessage?.id,
+          text: replyMessage?.text || null,
+          senderId: replyMessage?.senderId,
+          type: replyMessage?.type,
+          file: replyMessage?.fileUrl || null
+        } : null
       });
+      setReplyMessage(null)
       const reference = await doc(db, "chats", id);
       await updateDoc(reference, {
         lastMessage: text,

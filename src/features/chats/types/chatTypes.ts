@@ -11,6 +11,13 @@ export type messageType = {
   fileName: string;
   deletedForMe?: string[];
   deletedForAll?: true;
+  replyTo: {
+    messageId: string;
+    text: string | null;
+    senderId: string;
+    type: string;
+    file: string | null;
+  };
 };
 
 export type ChatListTypes = {

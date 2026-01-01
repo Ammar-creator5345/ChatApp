@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { ChatListTypes, SelectedChatTypes } from "../../types/chatTypes";
-import { useSelectedUserContext } from "../../context/selectedUserContext";
+import { useSelectedUserContext } from "../../context/chatContext";
 import Header from "./components/layout/header";
 import SearchUserDrawer from "./components/layout/searchUserDrawer";
 import { DateFormatter } from "../../../../utils/dateFormatter";

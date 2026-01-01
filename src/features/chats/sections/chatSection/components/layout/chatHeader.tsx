@@ -26,7 +26,7 @@ import {
 } from "../../../../services/chatService";
 import { TimeFormatter } from "../../../../../../utils/timeFormatter";
 import ChatHeaderSkeleton from "./chatheaderSkeleton";
-import { useChatContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/chatContext";
 import { useAuth } from "../../../../../auth/context/authContext";
 
 const menuItemStyle = "flex justify-center items-center gap-3 font-[400]";

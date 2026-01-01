@@ -17,7 +17,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useChatContext } from "../../../../context/selectedUserContext";
+import { useChatContext } from "../../../../context/chatContext";
 import { useAuth } from "../../../../../auth/context/authContext";
 
 type PropsTypes = {
@@ -39,7 +39,7 @@ const InputSection = ({
 }: PropsTypes) => {
   const emojiDivRef = useRef<HTMLDivElement | null>(null);
   const [openEmojiPicker, setOpenEmojiPicker] = useState<boolean>(false);
-  const { replyMessage, setReplyMessage } = useChatContext()
+  const { replyMessage, setReplyMessage, selectedUserData } = useChatContext()
   const { user } = useAuth()
   const isSender = replyMessage?.senderId === user?.uid
   useEffect(() => {
@@ -59,22 +59,25 @@ const InputSection = ({
 
   return (
     <>
-      {replyMessage && <div className="px-2">
-        <div className="p-1 px-3 rounded-md border-l-[4px] bg-[#cecaca] border-l-green-500">
-          <div>
-            <div className="w-full flex items-center justify-between">
-              <p className="text-sm font-semibold text-[#389238]">{isSender ? "You" : "Other"}</p>
-              <button
-                onClick={() => setReplyMessage(null)}
-                type="button"
-                className="w-6 h-6 center">
-                <CloseSharpIcon sx={{ fontSize: "20px" }} />
-              </button>
-            </div>
-            <p className="text-sm text-[#3a3939]">{replyMessage?.text}</p>
+      {replyMessage && <div className="px-2 mb-2 max-w-full min-w-0">
+        <div className="w-full min-w-0 max-w-full p-1 pt-2 px-3 rounded-md border-l-[4px] bg-white shadow-sm pb-2 border-l-green-500">
+          <div className="relative w-full flex items-center justify-between">
+            <p className="text-xs font-semibold text-green-700">
+              Replying to {isSender ? "You" : selectedUserData?.displayName}
+            </p>
+            <button
+              onClick={() => setReplyMessage(null)}
+              type="button"
+              className="w-6 h-6 center absolute top-0 right-0">
+              <CloseSharpIcon sx={{ fontSize: "20px" }} />
+            </button>
           </div>
+          <p className="text-sm text-[#3a3939">
+            {replyMessage?.text}</p>
         </div>
-      </div>}
+      </div>
+      }
+
       <div className="bg-white relative flex items-center px-2 py-[2px] gap-1 rounded-3xl shadow-md">
         <div className="flex items-center gap-[2px]">
           <button

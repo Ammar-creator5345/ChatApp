@@ -3,7 +3,7 @@ import ChatList from "../features/chats/sections/chatList/chatList";
 import ChatSection from "../features/chats/sections/chatSection/chatSection";
 import { useAuth } from "../features/auth/context/authContext";
 import { messageType, SelectedChatTypes } from "../features/chats/types/chatTypes";
-import { ChatContext } from "../features/chats/context/selectedUserContext";
+import { ChatContext } from "../features/chats/context/chatContext";
 import DetailsDrawer, {
   drawerWidth,
 } from "../features/chats/sections/chatDrawer/detailsDrawer";
