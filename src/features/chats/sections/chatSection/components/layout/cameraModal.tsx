@@ -7,12 +7,17 @@ import VideoRecorder from "../videoRecorder";
 import CameraswitchIcon from "@mui/icons-material/Cameraswitch";
 import PhotoCapture, { PhotoCaptureRef } from "./photoCapture";
 
-type Props = {
+type CameraModalPropsTypes = {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  handleSendFile: (fileType: string, file: any, fileText?: string) => void;
 };
 
-export default function CameraModal({ open, setOpen }: Props) {
+export default function CameraModal({
+  open,
+  setOpen,
+  handleSendFile,
+}: CameraModalPropsTypes) {
   const [mode, setMode] = useState<"photo" | "video">("photo");
   const [cameraType, setCameraType] = useState<"user" | "environment">("user");
   const [isPhotoTaken, setIsPhotoTaken] = useState<boolean>(false);
@@ -64,12 +69,16 @@ export default function CameraModal({ open, setOpen }: Props) {
             ref={photoRef}
             onCapture={() => setIsPhotoTaken(true)}
             onClear={() => setIsPhotoTaken(false)}
+            handleSendFile={handleSendFile}
+            handleCloseModal={handleCloseModal}
           />
         ) : (
           <VideoRecorder
             cameraType={cameraType}
             isRecordingOn={isRecordingOn}
             setIsRecordingOn={setIsRecordingOn}
+            handleSendFile={handleSendFile}
+            handleCloseModal={handleCloseModal}
           />
         )}
 

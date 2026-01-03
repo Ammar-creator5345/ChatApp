@@ -2,6 +2,7 @@ import { messageType } from "../../../../types/chatTypes";
 import { useAuth } from "../../../../../auth/context/authContext";
 import { TimeFormatter } from "../../../../../../utils/timeFormatter";
 import { renderStatusIcon } from "../../../../utils/renderStatusIcon";
+import MessageBubble from "./messageBubble";
 
 type PropsTypes = {
   message: messageType;
@@ -21,14 +22,12 @@ const PdfMessage = ({ message }: PropsTypes) => {
   }
 
   return (
-    <div
-      className={`${
-        user?.uid === message.senderId
-          ? "chatMessage-right"
-          : "chatMessage-left"
-      }`}
-    >
-      <div className="flex flex-col relative items-center justify-center pb-4">
+    <MessageBubble message={message}>
+      <div
+        className={`flex flex-col relative items-center justify-center ${
+          message?.text ? "pb-0" : "pb-4"
+        }`}
+      >
         <div className="w-[250px] bg-[#6d6262] text-white p-2 rounded-md">
           <div className="flex items-center gap-1">
             <div className="flex-shrink-0 w-10">
@@ -62,16 +61,19 @@ const PdfMessage = ({ message }: PropsTypes) => {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-2 h-4 absolute -bottom-[4px] right-0">
-          <p className="text-[10px] whitespace-nowrap">
-            {TimeFormatter(message.timestamp.seconds)}
-          </p>
-          <p className="mb-1">
-            {user?.uid === message.senderId && renderStatusIcon(message.status)}
-          </p>
-        </div>
+        {message?.text && (
+          <p className="w-full px-1 pt-1 text-sm">{message?.text}</p>
+        )}
       </div>
-    </div>
+      <div className="flex items-center gap-2 h-4 absolute bottom-0 right-2">
+        <p className="text-[10px] whitespace-nowrap">
+          {TimeFormatter(message.timestamp.seconds)}
+        </p>
+        <p className="mb-1">
+          {user?.uid === message.senderId && renderStatusIcon(message.status)}
+        </p>
+      </div>
+    </MessageBubble>
   );
 };
 

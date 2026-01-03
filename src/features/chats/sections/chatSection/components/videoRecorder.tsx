@@ -6,17 +6,22 @@ import CircleIcon from "@mui/icons-material/Circle";
 import PauseIcon from "@mui/icons-material/Pause";
 import { ReactMediaRecorder } from "react-media-recorder";
 import StopIcon from "@mui/icons-material/Stop";
+import axios from "axios";
 
 type PropsTypes = {
   cameraType: string;
   isRecordingOn: boolean;
   setIsRecordingOn: Dispatch<SetStateAction<boolean>>;
+  handleSendFile: (fileType: string, file: any, fileText?: string) => void;
+  handleCloseModal: () => void;
 };
 
 const VideoRecorder = ({
   cameraType,
   isRecordingOn,
   setIsRecordingOn,
+  handleSendFile,
+  handleCloseModal,
 }: PropsTypes) => {
   const [recordingTime, setRecordingTime] = useState<number>(0);
   const [isPauseButton, setIsPauseButton] = useState<boolean>(true);
@@ -67,6 +72,14 @@ const VideoRecorder = ({
     setIsPauseButton((prev) => !prev);
   };
 
+  const handleSendCapturedVideo = async () => {
+    if (!recordedUrl) return;
+    const blob = await fetch(recordedUrl).then((res) => res.blob());
+
+    handleSendFile("video/mp4", blob);
+    handleCloseModal();
+    setRecordedUrl(undefined);
+  };
   return (
     <div>
       {!isRecorded ? (
@@ -74,7 +87,7 @@ const VideoRecorder = ({
           mirrored={true}
           audio={false}
           height={720}
-          screenshotFormat="image/jpeg"
+          screenshotFormat="image/png"
           width={1280}
           videoConstraints={videoConstraints}
           className="rounded-md"
@@ -94,7 +107,10 @@ const VideoRecorder = ({
             >
               <ReplayIcon />
             </button>
-            <button className="p-2 rounded-lg bg-green-500 flex items-center justify-center">
+            <button
+              onClick={handleSendCapturedVideo}
+              className="p-2 rounded-lg bg-green-500 flex items-center justify-center"
+            >
               <SendIcon />
             </button>
           </div>

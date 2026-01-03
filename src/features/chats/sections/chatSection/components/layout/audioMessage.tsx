@@ -10,6 +10,7 @@ import {
   showCurrentRecordingTime,
   ShowRecordingTime,
 } from "../../../../utils/showRecordingTime";
+import MessageBubble from "./messageBubble";
 
 type PropsTypes = {
   message: messageType;
@@ -44,7 +45,7 @@ const AudioMessage = ({ message }: PropsTypes) => {
   const isSender = user?.uid === message.senderId;
 
   return (
-    <div className={isSender ? "chatMessage-right" : "chatMessage-left"}>
+    <MessageBubble message={message}>
       <div className="bg-red-500 rounded-xl p-3 pb-0 w-[260px] flex flex-col gap-2 shadow-md">
         <div className="flex items-center gap-3">
           <button
@@ -87,7 +88,7 @@ const AudioMessage = ({ message }: PropsTypes) => {
           </div>
         </div>
       </div>
-    </div>
+    </MessageBubble>
   );
 };
 

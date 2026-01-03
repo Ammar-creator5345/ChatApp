@@ -18,20 +18,8 @@ type PropsTypes = {
 const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
   const { user } = useAuth();
   const { setOpenDetailsDrawer } = useChatContext();
-  const [selectedMessage, setSelectedMessage] = useState<messageType | null>(
-    null
-  );
-  // const [replyMessage, setReplyMessage] = useState<messageType | null>(null)
   const userData = useChatContext()?.selectedUserData;
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const openMenu = Boolean(anchorEl);
-  const MenuId = openMenu ? "simple-popover" : undefined;
-  const handleClickMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
+
   const groupedMessages = useMemo(() => {
     const groups: Record<string, messageType[]> = {};
     messages?.forEach((message) => {
@@ -44,15 +32,6 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
 
   return (
     <>
-      <OptionsMenu
-        open={openMenu}
-        id={MenuId}
-        anchorEl={anchorEl}
-        handleClose={handleCloseMenu}
-        selectedMessage={selectedMessage}
-      // replyMessage={replyMessage}
-      // setReplyMessage={setReplyMessage}
-      />
       <div>
         {Object.keys(groupedMessages).map((date, index) => (
           <div key={date}>
@@ -62,10 +41,11 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
             {groupedMessages[date]?.map((message: messageType) => (
               <div
                 key={message.id}
-                className={` mt-[6px] flex items-start gap-2 ${user?.uid === message.senderId
-                  ? "justify-end"
-                  : "justify-start"
-                  }`}
+                className={` mt-[6px] flex items-start gap-2 ${
+                  user?.uid === message.senderId
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
               >
                 {user?.uid !== message.senderId && (
                   <div
@@ -79,20 +59,16 @@ const Messages = ({ messages, messagesLoading: loading }: PropsTypes) => {
                     />
                   </div>
                 )}
-                {message.type === "text" && (
-                  <TextMessage
-                    message={message}
-                    handleClick={handleClickMenu}
-                    setSelectedMessage={setSelectedMessage}
-                  />
-                )}
+                {message.type === "text" && <TextMessage message={message} />}
                 {message.type === "image/png" && (
                   <ImageMessage message={message} />
                 )}
                 {message.type === "application/pdf" && (
                   <PdfMessage message={message} />
                 )}
-                {message.type === "video" && <VideoMessage message={message} />}
+                {message.type === "video/mp4" && (
+                  <VideoMessage message={message} />
+                )}
                 {message.type === "audio" && <AudioMessage message={message} />}
               </div>
             ))}

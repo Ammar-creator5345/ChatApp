@@ -118,7 +118,6 @@ const InputSection = ({
             onClick={handleSendMessage}
             className="p-2 center rounded-full bg-[#4dc24d] transition-all hover:scale-[1.1]"
           >
-            {/* <SendIcon /> */}
             <AiOutlineSend size={20} />
           </button>
         ) : (

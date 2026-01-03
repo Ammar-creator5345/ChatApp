@@ -7,6 +7,7 @@ import { ShowRecordingTime } from "../../../../utils/showRecordingTime";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 import VideoOpenModal from "./videoOpenModal";
+import MessageBubble from "./messageBubble";
 
 type PropsTypes = {
   message: messageType;
@@ -33,48 +34,36 @@ const VideoMessage = ({ message }: PropsTypes) => {
         setOpen={setOpen}
         fileUrl={message?.fileUrl}
       />
-      <div
-        className={`${
-          user?.uid === message.senderId
-            ? "chatMessage-right"
-            : "chatMessage-left"
-        }`}
-      >
-        <div
-          onClick={() => setOpen(true)}
-          className="w-[300px] h-[170px] flex items-center justify-center cursor-pointer"
-        >
-          <video
-            src={message?.fileUrl}
-            ref={videoRef}
-            width="100%"
-            height="100%"
-            className="rounded-md"
-          ></video>
-          <button className="bg-red-400/60 p-2 rounded-full flex items-center justify-center absolute">
-            <PlayArrowIcon />
-          </button>
-        </div>
-        <div className="flex h-4 items-center justify-between text-[10px] absolute right-4 bottom-3 w-full">
-          <div className="pl-8 pt-2 flex items-center justify-center gap-[2px]">
-            <VideocamOutlinedIcon
-              sx={{ fontSize: "17px", color: "white", paddingBottom: "1px" }}
+      <MessageBubble message={message}>
+        <div className="flex flex-col max-w-[300px] gap-1">
+          <div
+            onClick={() => setOpen(true)}
+            className="relative w-full h-[170px] rounded-md overflow-hidden cursor-pointer flex items-center justify-center"
+          >
+            <video
+              src={message?.fileUrl}
+              ref={videoRef}
+              className="w-full h-full object-cover"
             />
-            <p className="text-white">
+
+            <button className="absolute bg-black/50 p-2 rounded-full flex items-center justify-center">
+              <PlayArrowIcon fontSize="medium" sx={{ color: "white" }} />
+            </button>
+
+            <div className="absolute bottom-1 left-1 text-white text-[10px] flex items-center gap-1  px-1 rounded">
+              <VideocamOutlinedIcon sx={{ fontSize: 12 }} />
               {ShowRecordingTime(videoDuration.toString())}
-            </p>
-          </div>
-          <div className="flex items-center gap-2 pt-2  text-white ">
-            <p className="text-[10px] whitespace-nowrap">
-              {TimeFormatter(message.timestamp.seconds)}
-            </p>
-            <p className="pb-1">
+            </div>
+            <div className="absolute bottom-1 right-1 flex items-center gap-1 text-white text-[10px]  px-1 rounded">
               {user?.uid === message.senderId &&
                 renderStatusIcon(message.status)}
-            </p>
+            </div>
           </div>
+          {message?.text && (
+            <p className="text-sm break-words px-1">{message.text}</p>
+          )}
         </div>
-      </div>
+      </MessageBubble>
     </>
   );
 };

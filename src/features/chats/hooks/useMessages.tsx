@@ -22,8 +22,7 @@ const useMessages = (chatId: string | undefined) => {
   const { user } = useAuth();
   const [messagesLoading, setMessagesLoading] = useState<boolean>(false);
   const { activeUser } = useActiveUser("otherId");
-  const { replyMessage, setReplyMessage } = useChatContext()
-
+  const { replyMessage, setReplyMessage } = useChatContext();
 
   useEffect(() => {
     if (!chatId || !user?.uid) return;
@@ -36,7 +35,9 @@ const useMessages = (chatId: string | undefined) => {
         id: chat.id,
         ...chat.data(),
       })) as messageType[];
-      const visibleMessages = chats?.filter((msg) => !msg.deletedForMe?.includes(user?.uid))
+      const visibleMessages = chats?.filter(
+        (msg) => !msg.deletedForMe?.includes(user?.uid)
+      );
       setMessages(visibleMessages);
       console.log(chats);
       updateDoc(doc(db, "chats", chatId), {
@@ -83,15 +84,17 @@ const useMessages = (chatId: string | undefined) => {
         status: "sent",
         deletedForMe: [],
         deletedForAll: false,
-        replyTo: replyMessage ? {
-          messageId: replyMessage?.id,
-          text: replyMessage?.text || null,
-          senderId: replyMessage?.senderId,
-          type: replyMessage?.type,
-          file: replyMessage?.fileUrl || null
-        } : null
+        replyTo: replyMessage
+          ? {
+              messageId: replyMessage?.id,
+              text: replyMessage?.text || null,
+              senderId: replyMessage?.senderId,
+              type: replyMessage?.type,
+              file: replyMessage?.fileUrl || null,
+            }
+          : null,
       });
-      setReplyMessage(null)
+      setReplyMessage(null);
       const reference = await doc(db, "chats", id);
       await updateDoc(reference, {
         lastMessage: text,
@@ -106,7 +109,11 @@ const useMessages = (chatId: string | undefined) => {
       setMessagesLoading(false);
     }
   };
-  const sendFile = async (fileType: string, file: any) => {
+  const sendFile = async (
+    fileType: string,
+    file: any,
+    fileText: string = ""
+  ) => {
     try {
       if (!file) return;
       let fileUrl;
@@ -132,7 +139,8 @@ const useMessages = (chatId: string | undefined) => {
         fileUrl: fileUrl,
         type: fileType,
         status: "sent",
-        fileName: file.name,
+        fileName: file.name || "",
+        text: fileText || "",
       });
       console.log("added Message");
     } catch (err) {

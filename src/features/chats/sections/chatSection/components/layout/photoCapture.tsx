@@ -7,14 +7,25 @@ export type PhotoCaptureRef = {
   takePhoto: () => void;
 };
 
-interface PropTypes {
+interface PhotoCapturePropTypes {
   cameraType: string;
   onCapture: () => void;
   onClear: () => void;
+  handleSendFile: (fileType: string, file: any, fileText?: string) => void;
+  handleCloseModal: () => void;
 }
 
-const PhotoCapture = forwardRef<PhotoCaptureRef, PropTypes>(
-  ({ cameraType, onCapture, onClear }: PropTypes, ref) => {
+const PhotoCapture = forwardRef<PhotoCaptureRef, PhotoCapturePropTypes>(
+  (
+    {
+      cameraType,
+      onCapture,
+      onClear,
+      handleSendFile,
+      handleCloseModal,
+    }: PhotoCapturePropTypes,
+    ref
+  ) => {
     const [image, setImage] = useState<null | string>(null);
     const webcamRef = useRef<null | Webcam>(null);
     const videoConstraints = {
@@ -33,6 +44,13 @@ const PhotoCapture = forwardRef<PhotoCaptureRef, PropTypes>(
       takePhoto: handlePhotoClick,
     }));
 
+    const handleSendCapturedImage = async () => {
+      // const capturedImage = URL.createObjectURL(new Blob(image));
+      await handleSendFile("image/png", image);
+      handleCloseModal();
+      setImage(null);
+    };
+
     return (
       <div>
         {!image ? (
@@ -41,7 +59,7 @@ const PhotoCapture = forwardRef<PhotoCaptureRef, PropTypes>(
             mirrored={true}
             audio={false}
             height={720}
-            screenshotFormat="image/jpeg"
+            screenshotFormat="image/png"
             width={1280}
             videoConstraints={videoConstraints}
             className="rounded-md"
@@ -59,7 +77,10 @@ const PhotoCapture = forwardRef<PhotoCaptureRef, PropTypes>(
               >
                 <ReplayIcon />
               </button>
-              <button className="p-2 rounded-lg bg-green-500 flex items-center justify-center">
+              <button
+                onClick={handleSendCapturedImage}
+                className="p-2 rounded-lg bg-green-500 flex items-center justify-center"
+              >
                 <SendIcon />
               </button>
             </div>

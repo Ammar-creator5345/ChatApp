@@ -31,6 +31,7 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     pauseRecording,
     resumeRecording,
     mediaBlobUrl,
+    clearBlobUrl
   } = useReactMediaRecorder({ audio: true });
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [recordingTime, setRecordingTime] = useState<number>(0);
@@ -45,15 +46,17 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
   };
   const [uploadedFileUrl, setUploadedFileUrl] = useState<string | null>(null);
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string | null>(null);
   const [file, setFile] = useState<Record<string, any>>({});
   const { activeUser, isBlocked } = useActiveUser(selectedChat?.otherUid!);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
+  const [fileText, setFileText] = useState<string>("");
   const handleCloseDrawer = (): void => {
     setOpenDrawer(false);
-    setImage("");
+    setImage(null);
     setFile({});
+    setFileText("");
   };
 
   const resumeTimer = () => {
@@ -84,8 +87,12 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     }
   };
 
-  const handleSendFile = async (fileType: string, file: any) => {
-    const res = await sendFile(fileType, file);
+  const handleSendFile = async (
+    fileType: string,
+    file: any,
+    fileText: string = ""
+  ) => {
+    const res = await sendFile(fileType, file, fileText);
     setOpenDrawer(false);
   };
 
@@ -156,8 +163,14 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
         openDrawer={openDrawer}
         handleCloseDrawer={handleCloseDrawer}
         handleSendFile={handleSendFile}
+        fileText={fileText}
+        setFileText={setFileText}
       />
-      <CameraModal open={openCameraModal} setOpen={setOpenCameraModal} />
+      <CameraModal
+        open={openCameraModal}
+        setOpen={setOpenCameraModal}
+        handleSendFile={handleSendFile}
+      />
       <div className="flex flex-col h-screen">
         <div>
           <ChatHeader selectedChat={selectedChat} />
@@ -186,6 +199,7 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
                 setIsPaused={setIsPaused}
                 handleSendFile={handleSendFile}
                 mediaBlobUrl={mediaBlobUrl}
+                clearBlobUrl={clearBlobUrl}
               />
             )}
           </div>

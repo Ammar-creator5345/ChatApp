@@ -27,9 +27,8 @@ code {
   background: #c2bfbf;
   max-width: 65%;
   display: flex;
-  gap: 10px;
-  align-items: end;
-  padding: 5px 10px;
+  flex-direction: column;
+  padding: 4px;
   position: relative;
 }
 
@@ -50,7 +49,7 @@ code {
   border-top: 0px solid transparent;
   border-bottom: 15px solid transparent;
   top: 0;
-  left: -25px;
+  left: -26px;
 }
 
 .chatMessage-right::after {
@@ -61,7 +60,7 @@ code {
   border-top: 0px solid transparent;
   border-bottom: 15px solid transparent;
   top: 0;
-  right: -25px;
+  right: -26px;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -83,7 +82,8 @@ code {
   border-radius: 10px;
   margin: 10px;
 }
-.center{
+
+.center {
   display: flex;
   justify-content: center;
   align-items: center;

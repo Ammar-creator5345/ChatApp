@@ -1,6 +1,6 @@
 import Popover from "@mui/material/Popover";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
-import FileDrawer from "./layout/fileDrawer";
+// import FileDrawer from "./layout/fileDrawer";
 
 type PropTypes = {
   open: boolean;
@@ -56,9 +56,9 @@ const MenuPopover = ({
               handleClose();
               document.getElementById("photos_videos_picker")?.click();
             }}
-            className="hover:bg-red-200 p-2 w-full text-start cursor-pointer"
+            className="hover:bg-red-200 p-2 w-full text-start  font-[500] text-sm"
           >
-            Photos and videos
+            Photos & videos
           </button>
 
           <button
@@ -66,7 +66,7 @@ const MenuPopover = ({
               handleClose();
               document.getElementById("document_picker")?.click();
             }}
-            className="hover:bg-red-200 p-2 w-full text-start cursor-pointer"
+            className="hover:bg-red-200 p-2 w-full text-start  font-[500] text-sm"
           >
             Documents
           </button>
@@ -76,7 +76,7 @@ const MenuPopover = ({
               handleClose();
               setOpenCameraModal(true);
             }}
-            className="hover:bg-red-200 p-2 w-full text-start"
+            className="hover:bg-red-200 p-2 w-full text-start font-[500] text-sm"
           >
             <h1>Camera</h1>
           </button>
