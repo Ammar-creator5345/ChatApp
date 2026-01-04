@@ -37,7 +37,6 @@ const OptionsMenu = ({
   };
   // const [replyMessage, setReplyMessage] = useState<messageType | null>(null)
 
-
   const handleTextCopy = () => {
     navigator.clipboard.writeText(selectedMessage?.text || "");
     handleClose();
@@ -46,13 +45,13 @@ const OptionsMenu = ({
   const handleDeleteForAll = async () => {
     if (!selectedMessage?.id || !selectedChat?.id || !user?.uid) return;
     await deleteForAll(selectedChat?.id, selectedMessage?.id, user?.uid);
-    handleClose()
-  }
+    handleClose();
+  };
   const handleDeleteForMe = async () => {
     if (!selectedMessage?.id || !selectedChat?.id || !user?.uid) return;
     await deleteForMe(selectedChat?.id, selectedMessage?.id, user?.uid);
-    handleClose()
-  }
+    handleClose();
+  };
   return (
     <>
       <DeleteConfirmationModal
@@ -73,25 +72,27 @@ const OptionsMenu = ({
           horizontal: "left",
         }}
         sx={{
-          zIndex: "100000000"
+          zIndex: "100000000",
         }}
       >
         <div className="flex flex-col p-1">
-          <ButtonItem
-            icon={<ContentCopyIcon />}
-            text="Copy"
-            isMenu
-            className={MenuItemStyle}
-            handleClick={handleTextCopy}
-          />
+          {selectedMessage?.type === "text" && (
+            <ButtonItem
+              icon={<ContentCopyIcon />}
+              text="Copy"
+              isMenu
+              className={MenuItemStyle}
+              handleClick={handleTextCopy}
+            />
+          )}
           <ButtonItem
             icon={<ReplyIcon />}
             text="Reply"
             isMenu
             className={MenuItemStyle}
             handleClick={() => {
-              setReplyMessage(selectedMessage)
-              handleClose()
+              setReplyMessage(selectedMessage);
+              handleClose();
             }}
           />
           <ButtonItem

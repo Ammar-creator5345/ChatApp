@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { ChatListTypes, SelectedChatTypes } from "../../types/chatTypes";
-import { useSelectedUserContext } from "../../context/chatContext";
+import { useChatContext } from "../../context/chatContext";
 import Header from "./components/layout/header";
 import SearchUserDrawer from "./components/layout/searchUserDrawer";
 import { DateFormatter } from "../../../../utils/dateFormatter";
@@ -69,9 +69,6 @@ const ChatList = ({ chatList, setSelectedChat, loading }: propsTypes) => {
     );
   }, [chatList, favouriteChats, chatsType, search]);
 
-  useEffect(() => {
-    console.log(chatsType);
-  }, [chatsType]);
   const handleClickChat = (value: ChatListTypes) => {
     setSelectedChat({
       id: value.id.toString(),

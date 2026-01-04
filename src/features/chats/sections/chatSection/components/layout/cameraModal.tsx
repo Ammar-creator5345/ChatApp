@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import VideocamIcon from "@mui/icons-material/Videocam";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import VideoRecorder from "../videoRecorder";
+import VideoRecorder from "./videoRecorder";
 import CameraswitchIcon from "@mui/icons-material/Cameraswitch";
 import PhotoCapture, { PhotoCaptureRef } from "./photoCapture";
 

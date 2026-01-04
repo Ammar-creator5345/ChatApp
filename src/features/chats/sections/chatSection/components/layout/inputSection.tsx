@@ -4,9 +4,13 @@ import AttachFileOutlinedIcon from "@mui/icons-material/AttachFileOutlined";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import MicNoneOutlinedIcon from "@mui/icons-material/MicNoneOutlined";
 import EmojiPicker from "emoji-picker-react";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import { AiOutlineSend } from "react-icons/ai";
-import CloseSharpIcon from '@mui/icons-material/CloseSharp';
+import CloseSharpIcon from "@mui/icons-material/CloseSharp";
+import InsertPhotoOutlinedIcon from "@mui/icons-material/InsertPhotoOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 
 import { BsFillSendFill } from "react-icons/bs";
 import {
@@ -39,9 +43,9 @@ const InputSection = ({
 }: PropsTypes) => {
   const emojiDivRef = useRef<HTMLDivElement | null>(null);
   const [openEmojiPicker, setOpenEmojiPicker] = useState<boolean>(false);
-  const { replyMessage, setReplyMessage, selectedUserData } = useChatContext()
-  const { user } = useAuth()
-  const isSender = replyMessage?.senderId === user?.uid
+  const { replyMessage, setReplyMessage, selectedUserData } = useChatContext();
+  const { user } = useAuth();
+  const isSender = replyMessage?.senderId === user?.uid;
   useEffect(() => {
     const handleOutsideClick = (e: MouseEvent) => {
       if (
@@ -59,24 +63,93 @@ const InputSection = ({
 
   return (
     <>
-      {replyMessage && <div className="px-2 mb-2 max-w-full min-w-0">
-        <div className="w-full min-w-0 max-w-full p-1 pt-2 px-3 rounded-md border-l-[4px] bg-white shadow-sm pb-2 border-l-green-500">
-          <div className="relative w-full flex items-center justify-between">
-            <p className="text-xs font-semibold text-green-700">
-              Replying to {isSender ? "You" : selectedUserData?.displayName}
-            </p>
-            <button
-              onClick={() => setReplyMessage(null)}
-              type="button"
-              className="w-6 h-6 center absolute top-0 right-0">
-              <CloseSharpIcon sx={{ fontSize: "20px" }} />
-            </button>
+      {replyMessage && (
+        <div className="px-2 mb-2 max-w-full min-w-0">
+          <div className="w-full min-w-0 max-w-full p-1 pt-2 px-3 rounded-md border-l-[4px] bg-white shadow-sm pb-2 border-l-green-500">
+            <div className="relative w-full flex items-center justify-between">
+              {/* <p className="text-xs font-semibold text-green-700">
+                Replying to {isSender ? "You" : selectedUserData?.displayName}
+              </p> */}
+              <button
+                onClick={() => setReplyMessage(null)}
+                type="button"
+                className="w-6 h-6 center absolute top-0 right-0"
+              >
+                <CloseSharpIcon sx={{ fontSize: "20px" }} />
+              </button>
+              {replyMessage.type === "text" && (
+                <div className="">
+                  <p className="font-semibold text-sm">
+                    {isSender ? "You" : selectedUserData?.displayName}
+                  </p>
+                  <p className="truncate text-[13px] text-[#3a3939]">
+                    {replyMessage.text}
+                  </p>
+                </div>
+              )}
+              {replyMessage?.type === "video/mp4" && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {isSender ? "You" : selectedUserData?.displayName}
+                    </p>
+                    <div className="flex items-center gap-[2px]">
+                      <VideocamOutlinedIcon sx={{ fontSize: "17px" }} />
+                      <span className="text-sm">Video</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {replyMessage?.type === "audio" && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {isSender ? "You" : selectedUserData?.displayName}
+                    </p>
+                    <div className="flex items-center gap-[2px]">
+                      <MicOutlinedIcon sx={{ fontSize: "17px" }} />
+                      <span className="text-sm">Audio</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {replyMessage?.type === "application/pdf" && (
+                <div className="flex items-center gap-3">
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {isSender ? "You" : selectedUserData?.displayName}
+                    </p>
+                    <div className="flex items-center gap-[2px]">
+                      <DescriptionOutlinedIcon sx={{ fontSize: "17px" }} />
+                      <span className="text-sm">Document</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {replyMessage?.type === "image/png" && (
+                <div className="flex items-center gap-3 w-full justify-between pr-10">
+                  <div>
+                    <p className="font-semibold text-sm">
+                      {isSender ? "You" : selectedUserData?.displayName}
+                    </p>
+                    <div className="flex items-center gap-[2px]">
+                      <InsertPhotoOutlinedIcon sx={{ fontSize: "17px" }} />
+                      <span className="text-sm">Photo</span>
+                    </div>
+                  </div>
+                  <img
+                    src={replyMessage?.fileUrl}
+                    alt="reply picture"
+                    className="w-10 aspect-square rounded-sm object-conver"
+                  />
+                </div>
+              )}
+            </div>
+            {/* <p className="text-sm text-[#3a3939">{replyMessage?.text}</p> */}
           </div>
-          <p className="text-sm text-[#3a3939">
-            {replyMessage?.text}</p>
         </div>
-      </div>
-      }
+      )}
 
       <div className="bg-white relative flex items-center px-2 py-[2px] gap-1 rounded-3xl shadow-md">
         <div className="flex items-center gap-[2px]">
@@ -126,7 +199,7 @@ const InputSection = ({
               setIsRecordingOn(true);
               startRecording();
             }}
-            className="p-2 center rounded-full hover:bg-[#4dc24d]"
+            className="p-2 center rounded-full transition-all hover:bg-[#4dc24d]"
           >
             <MicNoneOutlinedIcon />
           </button>
@@ -140,7 +213,6 @@ const InputSection = ({
         </div>
       </div>
     </>
-
   );
 };
 

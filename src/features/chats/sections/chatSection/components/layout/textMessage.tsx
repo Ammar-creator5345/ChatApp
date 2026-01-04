@@ -15,22 +15,7 @@ const TextMessage = ({ message }: TextMessageTypes) => {
   return (
     <MessageBubble message={message}>
       <div className="mx-1 flex items-end gap-2">
-        <p>
-          {message.text ? (
-            <p className="text-[15px]">{message?.text}</p>
-          ) : (
-            message.deletedForAll && (
-              <div className="text-sm italic center gap-1">
-                <BlockFlippedIcon sx={{ fontSize: "18px" }} />
-                <p>
-                  {isSender
-                    ? "You deleted this message"
-                    : "This message was deleted"}
-                </p>
-              </div>
-            )
-          )}
-        </p>
+        <p className="text-[15px]">{message?.text}</p>
         <div className="flex items-end gap-1 h-4">
           <p className="text-[10px] whitespace-nowrap">
             {TimeFormatter(message.timestamp.seconds)}

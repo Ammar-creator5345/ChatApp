@@ -236,9 +236,9 @@ const ChatHeader = ({ selectedChat }: propsTypes) => {
               <p className="text-lg font-bold">{userData?.displayName}</p>
               <p className="text-sm">
                 {userData?.isOnline
-                  ? userData.isOnline
+                  ? "Online"
                   : "Last online: " +
-                    TimeFormatter(userData?.lastOnline.seconds as number)}
+                    TimeFormatter(userData?.lastOnline.seconds)}
               </p>
             </div>
           </div>

@@ -43,10 +43,10 @@ const DetailsDrawer = ({
   const { user } = useAuth();
   const selected_chat = chatList?.find((chat) => chat?.id === selectedChat?.id);
   const [isFavourite, setIsFavourite] = useState<boolean>(false);
-  console.log("selected_chat", selected_chat);
   const modalTextMap: Record<string, string> = {
-    block: `Are you sure you want to ${isBlocked ? "unblock" : "block"
-      } this user?`,
+    block: `Are you sure you want to ${
+      isBlocked ? "unblock" : "block"
+    } this user?`,
     delete: "Are you sure you want to delete this chat?",
     clear: "Are you sure you want to clear this chat?",
   };
@@ -55,6 +55,7 @@ const DetailsDrawer = ({
     const status = selected_chat.favourites?.[user.uid] ?? false;
     setIsFavourite(status);
   }, [selected_chat, user?.uid]);
+
   const handleDeleteChat = async () => {
     if (!selectedChat?.id) return;
     try {
@@ -159,8 +160,9 @@ const DetailsDrawer = ({
             <hr className="my-3" />
             <ButtonItem text="Starred Messages" icon={<StarOutlineIcon />} />
             <ButtonItem
-              text={`${isBlocked ? "Unblock" : "Blocked"} ${selectedUserData?.displayName
-                }`}
+              text={`${isBlocked ? "Unblock" : "Blocked"} ${
+                selectedUserData?.displayName
+              }`}
               icon={<BlockIcon />}
               handleClick={() => setModalAction("block")}
             />

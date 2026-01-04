@@ -55,7 +55,6 @@ const PopOver = ({
   };
 
   useEffect(() => {
-    console.log(chat);
     if (!chat || !user?.uid) return;
     const status = chat?.favourites?.[user?.uid];
     setIsFavourite(status);

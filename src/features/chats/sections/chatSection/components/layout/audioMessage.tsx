@@ -19,7 +19,7 @@ type PropsTypes = {
 const AudioMessage = ({ message }: PropsTypes) => {
   const [wavesurfer, setWavesurfer] = useState<any>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0); // ⬅️ Timer state
+  const [currentTime, setCurrentTime] = useState(0);
   const { user } = useAuth();
 
   const onReady = (ws: any) => {
@@ -46,11 +46,11 @@ const AudioMessage = ({ message }: PropsTypes) => {
 
   return (
     <MessageBubble message={message}>
-      <div className="bg-red-500 rounded-xl p-3 pb-0 w-[260px] flex flex-col gap-2 shadow-md">
+      <div className="bg-[#c2bfbf] border border-black/10 rounded-xl p-3 pb-0 w-[250px] flex flex-col gap-2 shadow-md">
         <div className="flex items-center gap-3">
           <button
             onClick={onPlayPause}
-            className="bg-white text-red-600 p-2 rounded-full shadow-md hover:scale-110 transition"
+            className="bg-white p-2 rounded-full shadow-md hover:scale-110 transition"
           >
             {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
           </button>
@@ -58,7 +58,7 @@ const AudioMessage = ({ message }: PropsTypes) => {
           <div className="flex-1 min-w-0">
             <WavesurferPlayer
               height={40}
-              waveColor="#bcb3b3"
+              waveColor="white"
               progressColor="#ffdddd"
               cursorColor="white"
               cursorWidth={2}
