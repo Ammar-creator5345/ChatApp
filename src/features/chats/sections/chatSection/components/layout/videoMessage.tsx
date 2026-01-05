@@ -21,9 +21,8 @@ const VideoMessage = ({ message }: PropsTypes) => {
 
   useEffect(() => {
     if (!videoRef.current) return;
-
     videoRef.current.onloadedmetadata = () => {
-      setVideoDuration(videoRef.current!.duration);
+      setVideoDuration(videoRef?.current!.duration);
     };
   }, []);
 

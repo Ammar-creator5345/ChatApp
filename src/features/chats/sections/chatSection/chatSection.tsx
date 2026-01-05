@@ -12,6 +12,8 @@ import ChatHeader from "./components/layout/chatHeader";
 import useActiveUser from "../../../../shared/hooks/useActiveUser";
 import BlockOutlinedIcon from "@mui/icons-material/BlockOutlined";
 import AlertMessage from "../../../../shared/components/layout/alertMessage";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type PropTypes = {
   selectedChat: SelectedChatTypes | null;
@@ -31,7 +33,7 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
     pauseRecording,
     resumeRecording,
     mediaBlobUrl,
-    clearBlobUrl
+    clearBlobUrl,
   } = useReactMediaRecorder({ audio: true });
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [recordingTime, setRecordingTime] = useState<number>(0);
@@ -52,6 +54,9 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
   const [fileText, setFileText] = useState<string>("");
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [showScrollButton, setShowScrollButton] = useState<boolean>(false);
+
   const handleCloseDrawer = (): void => {
     setOpenDrawer(false);
     setImage(null);
@@ -138,9 +143,37 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
       e.target.value = "";
     }
   };
+  // useEffect(() => {
+  //   console.log("selectedChatt", selectedChat);
+  // }, [selectedChat]);
+
   useEffect(() => {
-    console.log("selectedChatt", selectedChat);
-  }, [selectedChat]);
+    if (!scrollContainerRef.current) return;
+    const ref = scrollContainerRef.current;
+    ref.scrollTop = ref.scrollHeight;
+  }, [messages?.length]);
+
+  useEffect(() => {
+    const ref = scrollContainerRef.current;
+    const handleScroll = () => {
+      if (!ref) return;
+      // isAtBottom = 200 + 100 >= 500
+      const isAtBottom =
+        ref.scrollTop + ref.clientHeight >= ref.scrollHeight - 20;
+      setShowScrollButton(!isAtBottom);
+    };
+    ref?.addEventListener("scroll", handleScroll);
+    return () => {
+      ref?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const scrollToBottom = () => {
+    const ref = scrollContainerRef.current;
+    if (!ref) return;
+    ref.scrollTop = ref.scrollHeight;
+  };
+
   return (
     <div>
       <AlertMessage
@@ -175,8 +208,19 @@ const ChatSection = ({ selectedChat }: PropTypes) => {
         <div>
           <ChatHeader selectedChat={selectedChat} />
         </div>
-        <div className="pr-10 pl-4 flex-1 overflow-y-auto py-3 messages_scrollbar">
+        <div
+          ref={scrollContainerRef}
+          className="pr-10 pl-4 flex-1 overflow-y-auto py-3 messages_scrollbar"
+        >
           <Messages messages={messages} messagesLoading={messagesLoading} />
+          {showScrollButton && (
+            <button
+              onClick={scrollToBottom}
+              className="fixed bottom-20 right-3 z-50 bg-white shadow-md rounded-full center"
+            >
+              <KeyboardArrowDownIcon />
+            </button>
+          )}
         </div>
         {!isBlocked ? (
           <div className="rounded-full mx-3 mb-3">

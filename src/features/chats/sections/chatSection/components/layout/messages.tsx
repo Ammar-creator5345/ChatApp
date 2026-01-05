@@ -1,7 +1,7 @@
 import { DateHeaderFormatter } from "../../../../utils/DateHeaderFormatter";
 import { messageType } from "../../../../types/chatTypes";
 import { useAuth } from "../../../../../auth/context/authContext";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import AudioMessage from "./audioMessage";
 import PdfMessage from "./pdfMessage";
 import VideoMessage from "./videoMessage";

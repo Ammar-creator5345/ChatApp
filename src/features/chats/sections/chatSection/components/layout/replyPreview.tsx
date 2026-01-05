@@ -30,7 +30,9 @@ const ReplyPreview = ({ message }: { message: messageType }) => {
               <p className="font-semibold">
                 {isSender ? "You" : selectedUserData?.displayName}
               </p>
-              <p className="truncate opacity-70">{message.replyTo.text}</p>
+              <p className="truncate max-w-[200px] opacity-70">
+                {message.replyTo.text}
+              </p>
             </div>
           )}
           {message?.replyTo.type === "video/mp4" && (
