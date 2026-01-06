@@ -18,7 +18,7 @@ const ImageMessage = ({ message }: PropsTypes) => {
     <>
       <ImageModal open={open} setOpen={setOpen} fileUrl={message?.fileUrl} />
       <MessageBubble message={message}>
-        <div className="relative max-w-[300px]">
+        <div className="relative min-w-[250px] max-w-[300px]">
           <div
             onClick={() => setOpen(true)}
             className="h-[180px] cursor-pointer"
